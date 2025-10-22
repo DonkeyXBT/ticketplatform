@@ -68,32 +68,45 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       console.log("🔀 [REDIRECT] Called with url:", url)
       console.log("🔀 [REDIRECT] Base URL:", baseUrl)
 
+      // After successful sign in, ALWAYS redirect to dashboard
+      if (url.includes("/api/auth/callback") || url.includes("/api/auth/signin")) {
+        console.log("🎯 [REDIRECT] Auth callback/signin - forcing dashboard")
+        return `${baseUrl}/dashboard`
+      }
+
+      // If trying to go to login page after auth, redirect to dashboard
+      if (url.includes("/login")) {
+        console.log("🎯 [REDIRECT] Login page detected - redirecting to dashboard")
+        return `${baseUrl}/dashboard`
+      }
+
       // If the url is trying to go to setup or error page after successful auth, redirect to dashboard
       if (url.includes("/setup") || url.includes("/api/auth/error")) {
-        console.log("🎯 [REDIRECT] Overriding to dashboard")
+        console.log("🎯 [REDIRECT] Overriding setup/error to dashboard")
         return `${baseUrl}/dashboard`
       }
 
-      // If redirecting after sign in, go to dashboard
-      if (url.includes("/api/auth/callback")) {
-        console.log("🎯 [REDIRECT] Post-callback, going to dashboard")
-        return `${baseUrl}/dashboard`
-      }
-
-      // If url starts with baseUrl, use it
-      if (url.startsWith(baseUrl)) {
-        console.log("✅ [REDIRECT] Using provided URL:", url)
+      // If url starts with baseUrl and it's the dashboard, use it
+      if (url.startsWith(baseUrl) && url.includes("/dashboard")) {
+        console.log("✅ [REDIRECT] Dashboard URL provided, using it")
         return url
       }
 
-      // If url starts with /, prepend baseUrl
-      if (url.startsWith("/")) {
-        console.log("✅ [REDIRECT] Relative path, using:", `${baseUrl}${url}`)
-        return `${baseUrl}${url}`
+      // For any other baseUrl paths, redirect to dashboard
+      if (url.startsWith(baseUrl)) {
+        console.log("🎯 [REDIRECT] Other baseUrl path, forcing dashboard")
+        return `${baseUrl}/dashboard`
       }
 
-      // Default to dashboard
-      console.log("🎯 [REDIRECT] Default to dashboard")
+      // If url starts with /, prepend baseUrl
+      if (url.startsWith("/") && url !== "/login") {
+        const finalUrl = `${baseUrl}${url}`
+        console.log("✅ [REDIRECT] Relative path:", finalUrl)
+        return finalUrl
+      }
+
+      // Default to dashboard for everything else
+      console.log("🎯 [REDIRECT] Default fallback to dashboard")
       return `${baseUrl}/dashboard`
     },
     session({ session, user }) {

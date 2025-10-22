@@ -1,6 +1,8 @@
 import { Ticket, AlertCircle } from "lucide-react"
 import { signInWithDiscord } from "@/app/actions/auth"
 import Link from "next/link"
+import { auth } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
 function isConfigured() {
   return (
@@ -11,7 +13,14 @@ function isConfigured() {
   )
 }
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  // If user is already logged in, redirect to dashboard
+  const session = await auth()
+  if (session?.user) {
+    console.log("👤 [LOGIN] User already authenticated, redirecting to dashboard")
+    redirect("/dashboard")
+  }
+
   const configured = isConfigured()
 
   if (!configured) {
