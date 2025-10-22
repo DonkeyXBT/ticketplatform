@@ -124,10 +124,11 @@ export default function EventsOverviewClient({
         group.listedTickets += quantity
       }
 
-      // Calculate financials (multiply by quantity)
+      // Calculate financials
+      // Note: buyInPrice, salePrice, and profit are already totals (price per ticket × quantity)
       if (ticket.buyInPrice && ticket.buyCurrency) {
         group.totalInvestment += convertCurrencySync(
-          ticket.buyInPrice * quantity,
+          ticket.buyInPrice,
           ticket.buyCurrency,
           displayCurrency
         )
@@ -135,7 +136,7 @@ export default function EventsOverviewClient({
 
       if (ticket.salePrice && ticket.sellCurrency && ticket.status === "Sold") {
         group.totalRevenue += convertCurrencySync(
-          ticket.salePrice * quantity,
+          ticket.salePrice,
           ticket.sellCurrency,
           displayCurrency
         )
@@ -143,7 +144,7 @@ export default function EventsOverviewClient({
 
       if (ticket.profit && ticket.profitCurrency && ticket.status === "Sold") {
         group.totalProfit += convertCurrencySync(
-          ticket.profit * quantity,
+          ticket.profit,
           ticket.profitCurrency,
           displayCurrency
         )

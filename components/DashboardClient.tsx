@@ -122,20 +122,19 @@ export default function DashboardClient({
       .filter((t) => t.status === "Sold")
       .reduce((sum, t) => sum + (t.quantity || 1), 0)
 
-    // Convert all amounts to display currency (multiply by quantity)
+    // Convert all amounts to display currency
+    // Note: salePrice and buyInPrice are already totals (price per ticket × quantity)
     const totalRevenue = tickets.reduce((sum, t) => {
       const amount = t.salePrice || 0
-      const quantity = t.quantity || 1
       const ticketCurrency = t.sellCurrency || "USD"
-      const converted = convertCurrencySync(amount * quantity, ticketCurrency, displayCurrency)
+      const converted = convertCurrencySync(amount, ticketCurrency, displayCurrency)
       return sum + converted
     }, 0)
 
     const totalCost = tickets.reduce((sum, t) => {
       const amount = t.buyInPrice || 0
-      const quantity = t.quantity || 1
       const ticketCurrency = t.buyCurrency || "USD"
-      const converted = convertCurrencySync(amount * quantity, ticketCurrency, displayCurrency)
+      const converted = convertCurrencySync(amount, ticketCurrency, displayCurrency)
       return sum + converted
     }, 0)
 
