@@ -3,12 +3,22 @@ import Discord from "next-auth/providers/discord"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "./prisma"
 
+// Check if required environment variables are set
+const discordClientId = process.env.DISCORD_CLIENT_ID
+const discordClientSecret = process.env.DISCORD_CLIENT_SECRET
+
+if (!discordClientId || !discordClientSecret) {
+  console.warn(
+    "⚠️  Discord OAuth credentials not configured. Please set DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET environment variables."
+  )
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     Discord({
-      clientId: process.env.DISCORD_CLIENT_ID,
-      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+      clientId: discordClientId || "placeholder",
+      clientSecret: discordClientSecret || "placeholder",
       authorization: {
         params: {
           scope: "identify email",
@@ -28,5 +38,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   pages: {
     signIn: "/login",
+    error: "/setup", // Redirect to setup page on auth errors
   },
 })

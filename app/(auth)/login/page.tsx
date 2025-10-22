@@ -1,7 +1,52 @@
-import { Ticket } from "lucide-react"
+import { Ticket, AlertCircle } from "lucide-react"
 import { signInWithDiscord } from "@/app/actions/auth"
+import Link from "next/link"
+
+function isConfigured() {
+  return (
+    !!process.env.DISCORD_CLIENT_ID &&
+    process.env.DISCORD_CLIENT_ID !== "" &&
+    !!process.env.DISCORD_CLIENT_SECRET &&
+    process.env.DISCORD_CLIENT_SECRET !== ""
+  )
+}
 
 export default function LoginPage() {
+  const configured = isConfigured()
+
+  if (!configured) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+          <div className="flex flex-col items-center mb-8">
+            <div className="bg-yellow-100 p-4 rounded-full mb-4">
+              <AlertCircle className="h-12 w-12 text-yellow-600" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              Configuration Required
+            </h1>
+            <p className="text-gray-600 text-center">
+              Environment variables need to be configured
+            </p>
+          </div>
+
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+            <p className="text-sm text-yellow-700">
+              Discord OAuth credentials are not configured. Please set up your environment variables to continue.
+            </p>
+          </div>
+
+          <Link
+            href="/setup"
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center hover:from-purple-700 hover:to-blue-700"
+          >
+            Go to Setup Page
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
