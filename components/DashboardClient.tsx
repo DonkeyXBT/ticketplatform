@@ -198,12 +198,15 @@ export default function DashboardClient({
 
   const handleSaveTicket = async (ticketData: any) => {
     try {
+      // Filter out per-ticket price fields (used only for UI calculation)
+      const { buyPricePerTicket, salePricePerTicket, ...dataToSend } = ticketData
+
       if (editingTicket) {
         // Update existing ticket
         const res = await fetch(`/api/tickets/${editingTicket.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(ticketData),
+          body: JSON.stringify(dataToSend),
         })
 
         if (res.ok) {
@@ -211,18 +214,26 @@ export default function DashboardClient({
           setTickets(
             tickets.map((t) => (t.id === editingTicket.id ? updatedTicket : t))
           )
+        } else {
+          const error = await res.json()
+          console.error("Failed to update ticket:", error)
+          alert(`Failed to update ticket: ${error.error || "Unknown error"}`)
         }
       } else {
         // Create new ticket
         const res = await fetch("/api/tickets", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(ticketData),
+          body: JSON.stringify(dataToSend),
         })
 
         if (res.ok) {
           const newTicket = await res.json()
           setTickets([newTicket, ...tickets])
+        } else {
+          const error = await res.json()
+          console.error("Failed to create ticket:", error)
+          alert(`Failed to create ticket: ${error.error || "Unknown error"}`)
         }
       }
 
@@ -230,6 +241,7 @@ export default function DashboardClient({
       setEditingTicket(null)
     } catch (error) {
       console.error("Error saving ticket:", error)
+      alert(`Error saving ticket: ${error}`)
     }
   }
 
