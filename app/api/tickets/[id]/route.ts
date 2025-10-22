@@ -27,18 +27,29 @@ export async function PATCH(
     return NextResponse.json({ error: "Ticket not found" }, { status: 404 })
   }
 
-  // Calculate profit automatically
+  // Calculate profit in the buy currency
   const buyInPrice = data.buyInPrice !== undefined ? parseFloat(data.buyInPrice) : existingTicket.buyInPrice || 0
   const salePrice = data.salePrice !== undefined ? parseFloat(data.salePrice) : existingTicket.salePrice || 0
-  const profit = salePrice - buyInPrice
+
+  // Import currency conversion
+  const { convertCurrencySync } = await import("@/lib/currency")
+  const buyCurrency = data.buyCurrency || (existingTicket as any).buyCurrency || "USD"
+  const sellCurrency = data.sellCurrency || (existingTicket as any).sellCurrency || "USD"
+
+  // Convert sale price to buy currency for profit calculation
+  const saleInBuyCurrency = convertCurrencySync(salePrice, sellCurrency, buyCurrency)
+  const profit = saleInBuyCurrency - buyInPrice
 
   const ticket = await prisma.ticket.update({
     where: { id },
     data: {
       ...data,
       buyInPrice,
+      buyCurrency,
       salePrice,
+      sellCurrency,
       profit,
+      profitCurrency: buyCurrency,
       purchaseDate: data.purchaseDate ? new Date(data.purchaseDate) : undefined,
       eventDate: data.eventDate ? new Date(data.eventDate) : undefined,
     },

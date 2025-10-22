@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { X } from "lucide-react"
-import { CURRENCIES } from "@/lib/currency"
+import { CURRENCIES, convertCurrencySync } from "@/lib/currency"
 
 interface Ticket {
   id: string
@@ -58,8 +58,9 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
     email: "",
     orderNumber: "",
     buyInPrice: "",
+    buyCurrency: "USD",
     salePrice: "",
-    currency: "USD",
+    sellCurrency: "USD",
     saleId: "",
     platform: "Ticketmaster",
     status: "Listed",
@@ -87,8 +88,9 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
         email: ticket.email || "",
         orderNumber: ticket.orderNumber || "",
         buyInPrice: ticket.buyInPrice?.toString() || "",
+        buyCurrency: (ticket as any).buyCurrency || "USD",
         salePrice: ticket.salePrice?.toString() || "",
-        currency: (ticket as any).currency || "USD",
+        sellCurrency: (ticket as any).sellCurrency || "USD",
         saleId: ticket.saleId || "",
         platform: ticket.platform || "Ticketmaster",
         status: ticket.status || "Listed",
@@ -102,8 +104,16 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
   useEffect(() => {
     const buyIn = parseFloat(formData.buyInPrice) || 0
     const sale = parseFloat(formData.salePrice) || 0
-    setCalculatedProfit(sale - buyIn)
-  }, [formData.buyInPrice, formData.salePrice])
+
+    // Convert sale price to buy currency for profit calculation
+    const saleInBuyCurrency = convertCurrencySync(
+      sale,
+      formData.sellCurrency,
+      formData.buyCurrency
+    )
+
+    setCalculatedProfit(saleInBuyCurrency - buyIn)
+  }, [formData.buyInPrice, formData.salePrice, formData.buyCurrency, formData.sellCurrency])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -302,11 +312,11 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
 
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
-                Currency
+                Buy Currency
               </label>
               <select
-                name="currency"
-                value={formData.currency}
+                name="buyCurrency"
+                value={formData.buyCurrency}
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium bg-white"
               >
@@ -322,15 +332,20 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
               <label className="block text-sm font-bold text-slate-700 mb-2">
                 Buy-in Price
               </label>
-              <input
-                type="number"
-                name="buyInPrice"
-                value={formData.buyInPrice}
-                onChange={handleChange}
-                step="0.01"
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
-                placeholder="0.00"
-              />
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 font-bold">
+                  {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}
+                </span>
+                <input
+                  type="number"
+                  name="buyInPrice"
+                  value={formData.buyInPrice}
+                  onChange={handleChange}
+                  step="0.01"
+                  className="w-full pl-10 pr-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                  placeholder="0.00"
+                />
+              </div>
             </div>
 
             {/* Sale Information */}
@@ -361,17 +376,40 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
 
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
+                Sell Currency
+              </label>
+              <select
+                name="sellCurrency"
+                value={formData.sellCurrency}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium bg-white"
+              >
+                {CURRENCIES.map((curr) => (
+                  <option key={curr.code} value={curr.code}>
+                    {curr.code} - {curr.name} ({curr.symbol})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
                 Sale Price
               </label>
-              <input
-                type="number"
-                name="salePrice"
-                value={formData.salePrice}
-                onChange={handleChange}
-                step="0.01"
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
-                placeholder="0.00"
-              />
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 font-bold">
+                  {CURRENCIES.find((c) => c.code === formData.sellCurrency)?.symbol}
+                </span>
+                <input
+                  type="number"
+                  name="salePrice"
+                  value={formData.salePrice}
+                  onChange={handleChange}
+                  step="0.01"
+                  className="w-full pl-10 pr-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                  placeholder="0.00"
+                />
+              </div>
             </div>
 
             <div>
@@ -441,7 +479,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
             {/* Profit Display */}
             <div className="md:col-span-2 mt-6">
               <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 rounded-2xl p-6 border-2 border-indigo-200 shadow-lg">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-3">
                   <span className="text-lg font-bold text-slate-800">
                     Calculated Profit:
                   </span>
@@ -450,13 +488,24 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                       calculatedProfit >= 0 ? "text-emerald-600" : "text-rose-600"
                     }`}
                   >
-                    {CURRENCIES.find((c) => c.code === formData.currency)?.symbol || "$"}
-                    {calculatedProfit.toFixed(2)}
+                    {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}
+                    {calculatedProfit.toFixed(2)} {formData.buyCurrency}
                   </span>
                 </div>
-                <p className="text-sm text-slate-600 mt-3 font-medium">
-                  Automatically calculated: Sale Price - Buy-in Price (in {formData.currency})
-                </p>
+                <div className="text-sm text-slate-600 space-y-1">
+                  <p className="font-medium">
+                    💰 Buy: {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}{parseFloat(formData.buyInPrice) || 0} {formData.buyCurrency}
+                  </p>
+                  <p className="font-medium">
+                    💵 Sell: {CURRENCIES.find((c) => c.code === formData.sellCurrency)?.symbol}{parseFloat(formData.salePrice) || 0} {formData.sellCurrency}
+                    {formData.buyCurrency !== formData.sellCurrency && (
+                      <span className="ml-2 text-indigo-600">
+                        (≈ {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}
+                        {convertCurrencySync(parseFloat(formData.salePrice) || 0, formData.sellCurrency, formData.buyCurrency).toFixed(2)} {formData.buyCurrency})
+                      </span>
+                    )}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

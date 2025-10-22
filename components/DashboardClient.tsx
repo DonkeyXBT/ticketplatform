@@ -14,6 +14,9 @@ import {
   Edit,
   Trash2,
   X,
+  Moon,
+  Sun,
+  Download,
 } from "lucide-react"
 import { format } from "date-fns"
 import TicketModal from "./TicketModal"
@@ -23,6 +26,7 @@ import {
   getCurrencySymbol,
   formatCurrency,
 } from "@/lib/currency"
+import { useTheme } from "./ThemeProvider"
 
 interface Ticket {
   id: string
@@ -36,9 +40,11 @@ interface Ticket {
   email: string | null
   orderNumber: string | null
   buyInPrice: number | null
+  buyCurrency: string | null
   salePrice: number | null
+  sellCurrency: string | null
   profit: number | null
-  currency: string | null
+  profitCurrency: string | null
   saleId: string | null
   platform: string | null
   status: string | null
@@ -83,6 +89,7 @@ export default function DashboardClient({
   const [displayCurrency, setDisplayCurrency] = useState("USD")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
+  const { theme, toggleTheme } = useTheme()
 
   // Calculate statistics with currency conversion
   const stats = useMemo(() => {
@@ -92,14 +99,14 @@ export default function DashboardClient({
     // Convert all amounts to display currency
     const totalRevenue = tickets.reduce((sum, t) => {
       const amount = t.salePrice || 0
-      const ticketCurrency = t.currency || "USD"
+      const ticketCurrency = t.sellCurrency || "USD"
       const converted = convertCurrencySync(amount, ticketCurrency, displayCurrency)
       return sum + converted
     }, 0)
 
     const totalCost = tickets.reduce((sum, t) => {
       const amount = t.buyInPrice || 0
-      const ticketCurrency = t.currency || "USD"
+      const ticketCurrency = t.buyCurrency || "USD"
       const converted = convertCurrencySync(amount, ticketCurrency, displayCurrency)
       return sum + converted
     }, 0)
@@ -198,25 +205,101 @@ export default function DashboardClient({
     }
   }
 
+  // Export to CSV function
+  const exportToCSV = () => {
+    const headers = [
+      "Artist/Event",
+      "Location",
+      "Event Date",
+      "Section",
+      "Row",
+      "Seat",
+      "Platform",
+      "Order Number",
+      "Buy Price",
+      "Buy Currency",
+      "Sale Price",
+      "Sell Currency",
+      "Profit",
+      "Profit Currency",
+      "Status",
+      "Site Sold",
+      "Purchase Date",
+    ]
+
+    const rows = filteredTickets.map((ticket) => [
+      ticket.artist || "",
+      ticket.location || "",
+      ticket.eventDate ? format(new Date(ticket.eventDate), "yyyy-MM-dd") : "",
+      ticket.section || "",
+      ticket.row || "",
+      ticket.seat || "",
+      ticket.platform || "",
+      ticket.orderNumber || "",
+      ticket.buyInPrice || "",
+      ticket.buyCurrency || "USD",
+      ticket.salePrice || "",
+      ticket.sellCurrency || "USD",
+      ticket.profit || "",
+      ticket.profitCurrency || ticket.buyCurrency || "USD",
+      ticket.status || "",
+      ticket.siteSold || "",
+      ticket.purchaseDate
+        ? format(new Date(ticket.purchaseDate), "yyyy-MM-dd")
+        : "",
+    ])
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) =>
+        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
+      ),
+    ].join("\n")
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+    const link = document.createElement("a")
+    const url = URL.createObjectURL(blob)
+    link.setAttribute("href", url)
+    link.setAttribute(
+      "download",
+      `tickets-${format(new Date(), "yyyy-MM-dd")}.csv`
+    )
+    link.style.visibility = "hidden"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-lg border-b border-indigo-100">
+      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-indigo-100 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-2.5 rounded-xl shadow-lg">
                 <Ticket className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
                 Ticket Platform
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={toggleTheme}
+                className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 hover:bg-indigo-50 dark:hover:bg-slate-700 transition shadow-sm"
+                title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5 text-amber-500" />
+                ) : (
+                  <Moon className="h-5 w-5 text-indigo-600" />
+                )}
+              </button>
               <select
                 value={displayCurrency}
                 onChange={(e) => setDisplayCurrency(e.target.value)}
-                className="px-4 py-2 border-2 border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-bold bg-white shadow-sm"
+                className="px-4 py-2 border-2 border-indigo-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-800 shadow-sm"
                 title="Display Currency"
               >
                 {CURRENCIES.map((curr) => (
@@ -225,15 +308,15 @@ export default function DashboardClient({
                   </option>
                 ))}
               </select>
-              <div className="flex items-center space-x-3 bg-white px-4 py-2 rounded-xl shadow-sm border border-indigo-100">
+              <div className="flex items-center space-x-3 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-indigo-100 dark:border-slate-600">
                 {user.image && (
                   <img
                     src={user.image}
                     alt={user.name || "User"}
-                    className="h-9 w-9 rounded-full ring-2 ring-indigo-200"
+                    className="h-9 w-9 rounded-full ring-2 ring-indigo-200 dark:ring-indigo-400"
                   />
                 )}
-                <span className="text-sm font-semibold text-slate-700">
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                   {user.name}
                 </span>
               </div>
@@ -370,14 +453,24 @@ export default function DashboardClient({
               </select>
             </div>
 
-            {/* Add Ticket Button */}
-            <button
-              onClick={handleAddTicket}
-              className="flex items-center justify-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition shadow-lg hover:shadow-xl font-semibold"
-            >
-              <Plus className="h-5 w-5" />
-              <span>Add Ticket</span>
-            </button>
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={exportToCSV}
+                className="flex items-center justify-center space-x-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white rounded-xl transition shadow-lg hover:shadow-xl font-semibold"
+                title="Export to CSV"
+              >
+                <Download className="h-5 w-5" />
+                <span>Export CSV</span>
+              </button>
+              <button
+                onClick={handleAddTicket}
+                className="flex items-center justify-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition shadow-lg hover:shadow-xl font-semibold"
+              >
+                <Plus className="h-5 w-5" />
+                <span>Add Ticket</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -471,7 +564,7 @@ export default function DashboardClient({
                         {formatCurrency(
                           convertCurrencySync(
                             ticket.buyInPrice || 0,
-                            ticket.currency || "USD",
+                            ticket.buyCurrency || "USD",
                             displayCurrency
                           ),
                           displayCurrency
@@ -481,7 +574,7 @@ export default function DashboardClient({
                         {formatCurrency(
                           convertCurrencySync(
                             ticket.salePrice || 0,
-                            ticket.currency || "USD",
+                            ticket.sellCurrency || "USD",
                             displayCurrency
                           ),
                           displayCurrency
@@ -498,7 +591,7 @@ export default function DashboardClient({
                           {formatCurrency(
                             convertCurrencySync(
                               ticket.profit || 0,
-                              ticket.currency || "USD",
+                              ticket.profitCurrency || ticket.buyCurrency || "USD",
                               displayCurrency
                             ),
                             displayCurrency

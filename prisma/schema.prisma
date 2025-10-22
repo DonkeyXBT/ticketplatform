@@ -76,9 +76,11 @@ model Ticket {
   email         String?
   orderNumber   String?
   buyInPrice    Float?
+  buyCurrency   String?   @default("USD")
   salePrice     Float?
+  sellCurrency  String?   @default("USD")
   profit        Float?
-  currency      String?   @default("USD")
+  profitCurrency String?  @default("USD")
   saleId        String?
   platform      String?
   status        String?

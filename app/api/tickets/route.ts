@@ -30,18 +30,29 @@ export async function POST(req: Request) {
 
   const data = await req.json()
 
-  // Calculate profit automatically
+  // Calculate profit in the buy currency
   const buyInPrice = parseFloat(data.buyInPrice) || 0
   const salePrice = parseFloat(data.salePrice) || 0
-  const profit = salePrice - buyInPrice
+
+  // Import currency conversion
+  const { convertCurrencySync } = await import("@/lib/currency")
+  const buyCurrency = data.buyCurrency || "USD"
+  const sellCurrency = data.sellCurrency || "USD"
+
+  // Convert sale price to buy currency for profit calculation
+  const saleInBuyCurrency = convertCurrencySync(salePrice, sellCurrency, buyCurrency)
+  const profit = saleInBuyCurrency - buyInPrice
 
   const ticket = await prisma.ticket.create({
     data: {
       ...data,
       userId: session.user.id,
       buyInPrice,
+      buyCurrency,
       salePrice,
+      sellCurrency,
       profit,
+      profitCurrency: buyCurrency,
       purchaseDate: data.purchaseDate ? new Date(data.purchaseDate) : null,
       eventDate: data.eventDate ? new Date(data.eventDate) : null,
     },
