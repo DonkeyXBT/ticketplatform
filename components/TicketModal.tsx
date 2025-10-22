@@ -128,15 +128,18 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-indigo-100">
-        <div className="sticky top-0 bg-gradient-to-r from-indigo-50 to-purple-50 border-b-2 border-indigo-100 px-6 py-5 flex items-center justify-between">
-          <h2 className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn">
+      <div
+        className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-indigo-100 dark:border-slate-700 animate-scaleIn"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700 px-6 py-5 flex items-center justify-between backdrop-blur-sm z-10">
+          <h2 className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
             {ticket ? "Edit Ticket" : "Add New Ticket"}
           </h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-lg transition"
+            className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 p-2 rounded-lg transition-all duration-200 hover:scale-110"
           >
             <X className="h-6 w-6" />
           </button>
@@ -146,14 +149,14 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Event Details */}
             <div className="md:col-span-2">
-              <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 rounded-full mr-3"></div>
+              <h3 className="text-lg font-black text-slate-800 dark:text-slate-200 mb-4 flex items-center">
+                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 rounded-full mr-3"></div>
                 Event Details
               </h3>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Artist / Event Name
               </label>
               <input
@@ -161,13 +164,13 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="artist"
                 value={formData.artist}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="Enter artist or event name"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Location / Venue
               </label>
               <input
@@ -175,13 +178,13 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="Enter venue or location"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Purchase Date
               </label>
               <input
@@ -189,12 +192,12 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="purchaseDate"
                 value={formData.purchaseDate}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Event Date
               </label>
               <input
@@ -202,20 +205,20 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="eventDate"
                 value={formData.eventDate}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700"
               />
             </div>
 
             {/* Seat Information */}
             <div className="md:col-span-2 mt-4">
-              <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 rounded-full mr-3"></div>
+              <h3 className="text-lg font-black text-slate-800 dark:text-slate-200 mb-4 flex items-center">
+                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 rounded-full mr-3"></div>
                 Seat Information
               </h3>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Section
               </label>
               <input
@@ -223,13 +226,13 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="section"
                 value={formData.section}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="e.g., A1, Floor, Balcony"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Row
               </label>
               <input
@@ -237,13 +240,13 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="row"
                 value={formData.row}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="e.g., 12, AA"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Seat
               </label>
               <input
@@ -251,28 +254,28 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="seat"
                 value={formData.seat}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="e.g., 15, 16-17"
               />
             </div>
 
             {/* Purchase Information */}
             <div className="md:col-span-2 mt-4">
-              <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 rounded-full mr-3"></div>
+              <h3 className="text-lg font-black text-slate-800 dark:text-slate-200 mb-4 flex items-center">
+                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 rounded-full mr-3"></div>
                 Purchase Information
               </h3>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Platform
               </label>
               <select
                 name="platform"
                 value={formData.platform}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-700"
               >
                 {PLATFORMS.map((platform) => (
                   <option key={platform} value={platform}>
@@ -283,7 +286,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Order Number
               </label>
               <input
@@ -291,13 +294,13 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="orderNumber"
                 value={formData.orderNumber}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="Order/confirmation number"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Purchase Email
               </label>
               <input
@@ -305,20 +308,20 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="Email used for purchase"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Buy Currency
               </label>
               <select
                 name="buyCurrency"
                 value={formData.buyCurrency}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium bg-white"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-700"
               >
                 {CURRENCIES.map((curr) => (
                   <option key={curr.code} value={curr.code}>
@@ -329,11 +332,11 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Buy-in Price
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 font-bold">
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 dark:text-slate-400 font-bold">
                   {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}
                 </span>
                 <input
@@ -342,7 +345,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                   value={formData.buyInPrice}
                   onChange={handleChange}
                   step="0.01"
-                  className="w-full pl-10 pr-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                  className="w-full pl-10 pr-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                   placeholder="0.00"
                 />
               </div>
@@ -350,21 +353,21 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
 
             {/* Sale Information */}
             <div className="md:col-span-2 mt-4">
-              <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 rounded-full mr-3"></div>
+              <h3 className="text-lg font-black text-slate-800 dark:text-slate-200 mb-4 flex items-center">
+                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 rounded-full mr-3"></div>
                 Sale Information
               </h3>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Status
               </label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-700"
               >
                 {STATUSES.map((status) => (
                   <option key={status} value={status}>
@@ -375,14 +378,14 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Sell Currency
               </label>
               <select
                 name="sellCurrency"
                 value={formData.sellCurrency}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium bg-white"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-700"
               >
                 {CURRENCIES.map((curr) => (
                   <option key={curr.code} value={curr.code}>
@@ -393,11 +396,11 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Sale Price
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 font-bold">
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 dark:text-slate-400 font-bold">
                   {CURRENCIES.find((c) => c.code === formData.sellCurrency)?.symbol}
                 </span>
                 <input
@@ -406,14 +409,14 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                   value={formData.salePrice}
                   onChange={handleChange}
                   step="0.01"
-                  className="w-full pl-10 pr-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                  className="w-full pl-10 pr-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                   placeholder="0.00"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Site Sold On
               </label>
               <input
@@ -421,13 +424,13 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="siteSold"
                 value={formData.siteSold}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="e.g., Stubhub, Viagogo"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Sale ID
               </label>
               <input
@@ -435,21 +438,21 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="saleId"
                 value={formData.saleId}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="Sale/listing ID"
               />
             </div>
 
             {/* Delivery Information */}
             <div className="md:col-span-2 mt-4">
-              <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 rounded-full mr-3"></div>
+              <h3 className="text-lg font-black text-slate-800 dark:text-slate-200 mb-4 flex items-center">
+                <div className="w-1 h-6 bg-gradient-to-b from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 rounded-full mr-3"></div>
                 Delivery Information
               </h3>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Delivery Email
               </label>
               <input
@@ -457,13 +460,13 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="deliveryEmail"
                 value={formData.deliveryEmail}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="Buyer's email"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                 Delivery Name
               </label>
               <input
@@ -471,35 +474,35 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 name="deliveryName"
                 value={formData.deliveryName}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="Buyer's name"
               />
             </div>
 
             {/* Profit Display */}
             <div className="md:col-span-2 mt-6">
-              <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 rounded-2xl p-6 border-2 border-indigo-200 shadow-lg">
+              <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 dark:from-indigo-900/30 dark:via-purple-900/30 dark:to-blue-900/30 rounded-2xl p-6 border-2 border-indigo-200 dark:border-indigo-800 shadow-lg">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-lg font-bold text-slate-800">
+                  <span className="text-lg font-black text-slate-800 dark:text-slate-200">
                     Calculated Profit:
                   </span>
                   <span
                     className={`text-3xl font-black ${
-                      calculatedProfit >= 0 ? "text-emerald-600" : "text-rose-600"
+                      calculatedProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
                     }`}
                   >
                     {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}
                     {calculatedProfit.toFixed(2)} {formData.buyCurrency}
                   </span>
                 </div>
-                <div className="text-sm text-slate-600 space-y-1">
-                  <p className="font-medium">
+                <div className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
+                  <p className="font-bold">
                     💰 Buy: {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}{parseFloat(formData.buyInPrice) || 0} {formData.buyCurrency}
                   </p>
-                  <p className="font-medium">
+                  <p className="font-bold">
                     💵 Sell: {CURRENCIES.find((c) => c.code === formData.sellCurrency)?.symbol}{parseFloat(formData.salePrice) || 0} {formData.sellCurrency}
                     {formData.buyCurrency !== formData.sellCurrency && (
-                      <span className="ml-2 text-indigo-600">
+                      <span className="ml-2 text-indigo-600 dark:text-indigo-400">
                         (≈ {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}
                         {convertCurrencySync(parseFloat(formData.salePrice) || 0, formData.sellCurrency, formData.buyCurrency).toFixed(2)} {formData.buyCurrency})
                       </span>
@@ -511,17 +514,17 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
           </div>
 
           {/* Form Actions */}
-          <div className="flex items-center justify-end space-x-4 mt-10 pt-6 border-t-2 border-slate-200">
+          <div className="flex items-center justify-end space-x-4 mt-10 pt-6 border-t-2 border-slate-200 dark:border-slate-700">
             <button
               type="button"
               onClick={onClose}
-              className="px-8 py-3 border-2 border-slate-300 rounded-xl text-slate-700 font-bold hover:bg-slate-50 hover:border-slate-400 transition"
+              className="group px-8 py-3 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-200 hover:scale-105"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-8 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition shadow-lg hover:shadow-xl font-bold"
+              className="group px-8 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl font-bold hover:scale-105"
             >
               {ticket ? "Update Ticket" : "Add Ticket"}
             </button>
