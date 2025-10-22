@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { signOut } from "next-auth/react"
+import Link from "next/link"
 import {
   Plus,
   Search,
@@ -17,6 +18,7 @@ import {
   Moon,
   Sun,
   Download,
+  Calendar,
 } from "lucide-react"
 import { format } from "date-fns"
 import TicketModal from "./TicketModal"
@@ -302,6 +304,14 @@ export default function DashboardClient({
               </h1>
             </div>
             <div className="flex items-center space-x-3 animate-slideUp">
+              <Link
+                href="/events"
+                className="group flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105"
+                title="View Events Overview"
+              >
+                <Calendar className="h-4 w-4 transition-transform group-hover:scale-110" />
+                <span className="font-bold">Events</span>
+              </Link>
               <button
                 onClick={toggleTheme}
                 className="group p-2.5 rounded-xl bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105"
