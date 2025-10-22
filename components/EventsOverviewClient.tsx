@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import Link from "next/link"
 import {
   Ticket,
   Calendar,
@@ -9,6 +10,7 @@ import {
   TrendingUp,
   ChevronDown,
   ChevronUp,
+  ArrowLeft,
 } from "lucide-react"
 import { format } from "date-fns"
 import Navigation from "./Navigation"
