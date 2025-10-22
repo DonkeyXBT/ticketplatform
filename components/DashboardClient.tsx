@@ -17,6 +17,12 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 import TicketModal from "./TicketModal"
+import {
+  CURRENCIES,
+  convertCurrencySync,
+  getCurrencySymbol,
+  formatCurrency,
+} from "@/lib/currency"
 
 interface Ticket {
   id: string
@@ -32,6 +38,7 @@ interface Ticket {
   buyInPrice: number | null
   salePrice: number | null
   profit: number | null
+  currency: string | null
   saleId: string | null
   platform: string | null
   status: string | null
@@ -73,15 +80,30 @@ export default function DashboardClient({
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedPlatform, setSelectedPlatform] = useState("All Platforms")
   const [selectedStatus, setSelectedStatus] = useState("All")
+  const [displayCurrency, setDisplayCurrency] = useState("USD")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
 
-  // Calculate statistics
+  // Calculate statistics with currency conversion
   const stats = useMemo(() => {
     const totalTickets = tickets.length
     const soldTickets = tickets.filter((t) => t.status === "Sold").length
-    const totalRevenue = tickets.reduce((sum, t) => sum + (t.salePrice || 0), 0)
-    const totalCost = tickets.reduce((sum, t) => sum + (t.buyInPrice || 0), 0)
+
+    // Convert all amounts to display currency
+    const totalRevenue = tickets.reduce((sum, t) => {
+      const amount = t.salePrice || 0
+      const ticketCurrency = t.currency || "USD"
+      const converted = convertCurrencySync(amount, ticketCurrency, displayCurrency)
+      return sum + converted
+    }, 0)
+
+    const totalCost = tickets.reduce((sum, t) => {
+      const amount = t.buyInPrice || 0
+      const ticketCurrency = t.currency || "USD"
+      const converted = convertCurrencySync(amount, ticketCurrency, displayCurrency)
+      return sum + converted
+    }, 0)
+
     const totalProfit = totalRevenue - totalCost
 
     return {
@@ -91,7 +113,7 @@ export default function DashboardClient({
       totalProfit,
       averageProfit: totalTickets > 0 ? totalProfit / totalTickets : 0,
     }
-  }, [tickets])
+  }, [tickets, displayCurrency])
 
   // Filter tickets
   const filteredTickets = useMemo(() => {
@@ -191,6 +213,18 @@ export default function DashboardClient({
               </h1>
             </div>
             <div className="flex items-center space-x-4">
+              <select
+                value={displayCurrency}
+                onChange={(e) => setDisplayCurrency(e.target.value)}
+                className="px-4 py-2 border-2 border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-bold bg-white shadow-sm"
+                title="Display Currency"
+              >
+                {CURRENCIES.map((curr) => (
+                  <option key={curr.code} value={curr.code}>
+                    {curr.symbol} {curr.code}
+                  </option>
+                ))}
+              </select>
               <div className="flex items-center space-x-3 bg-white px-4 py-2 rounded-xl shadow-sm border border-indigo-100">
                 {user.image && (
                   <img
@@ -257,7 +291,7 @@ export default function DashboardClient({
                   Total Revenue
                 </p>
                 <p className="text-4xl font-bold text-slate-900 mt-2">
-                  ${stats.totalRevenue.toFixed(2)}
+                  {formatCurrency(stats.totalRevenue, displayCurrency)}
                 </p>
               </div>
               <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-3.5 rounded-xl shadow-md">
@@ -277,7 +311,7 @@ export default function DashboardClient({
                     stats.totalProfit >= 0 ? "text-emerald-600" : "text-rose-600"
                   }`}
                 >
-                  ${stats.totalProfit.toFixed(2)}
+                  {formatCurrency(stats.totalProfit, displayCurrency)}
                 </p>
               </div>
               <div
@@ -434,10 +468,24 @@ export default function DashboardClient({
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-800">
-                        ${ticket.buyInPrice?.toFixed(2) || "0.00"}
+                        {formatCurrency(
+                          convertCurrencySync(
+                            ticket.buyInPrice || 0,
+                            ticket.currency || "USD",
+                            displayCurrency
+                          ),
+                          displayCurrency
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-800">
-                        ${ticket.salePrice?.toFixed(2) || "0.00"}
+                        {formatCurrency(
+                          convertCurrencySync(
+                            ticket.salePrice || 0,
+                            ticket.currency || "USD",
+                            displayCurrency
+                          ),
+                          displayCurrency
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
@@ -447,7 +495,14 @@ export default function DashboardClient({
                               : "text-rose-600"
                           }`}
                         >
-                          ${ticket.profit?.toFixed(2) || "0.00"}
+                          {formatCurrency(
+                            convertCurrencySync(
+                              ticket.profit || 0,
+                              ticket.currency || "USD",
+                              displayCurrency
+                            ),
+                            displayCurrency
+                          )}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

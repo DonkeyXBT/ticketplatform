@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { X } from "lucide-react"
+import { CURRENCIES } from "@/lib/currency"
 
 interface Ticket {
   id: string
@@ -58,6 +59,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
     orderNumber: "",
     buyInPrice: "",
     salePrice: "",
+    currency: "USD",
     saleId: "",
     platform: "Ticketmaster",
     status: "Listed",
@@ -86,6 +88,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
         orderNumber: ticket.orderNumber || "",
         buyInPrice: ticket.buyInPrice?.toString() || "",
         salePrice: ticket.salePrice?.toString() || "",
+        currency: (ticket as any).currency || "USD",
         saleId: ticket.saleId || "",
         platform: ticket.platform || "Ticketmaster",
         status: ticket.status || "Listed",
@@ -299,7 +302,25 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
 
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
-                Buy-in Price ($)
+                Currency
+              </label>
+              <select
+                name="currency"
+                value={formData.currency}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium bg-white"
+              >
+                {CURRENCIES.map((curr) => (
+                  <option key={curr.code} value={curr.code}>
+                    {curr.code} - {curr.name} ({curr.symbol})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                Buy-in Price
               </label>
               <input
                 type="number"
@@ -340,7 +361,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
 
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
-                Sale Price ($)
+                Sale Price
               </label>
               <input
                 type="number"
@@ -429,11 +450,12 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                       calculatedProfit >= 0 ? "text-emerald-600" : "text-rose-600"
                     }`}
                   >
-                    ${calculatedProfit.toFixed(2)}
+                    {CURRENCIES.find((c) => c.code === formData.currency)?.symbol || "$"}
+                    {calculatedProfit.toFixed(2)}
                   </span>
                 </div>
                 <p className="text-sm text-slate-600 mt-3 font-medium">
-                  Automatically calculated: Sale Price - Buy-in Price
+                  Automatically calculated: Sale Price - Buy-in Price (in {formData.currency})
                 </p>
               </div>
             </div>
