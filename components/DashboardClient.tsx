@@ -177,38 +177,38 @@ export default function DashboardClient({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/80 backdrop-blur-md shadow-lg border-b border-indigo-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-2 rounded-lg">
+              <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-2.5 rounded-xl shadow-lg">
                 <Ticket className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 Ticket Platform
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 bg-white px-4 py-2 rounded-xl shadow-sm border border-indigo-100">
                 {user.image && (
                   <img
                     src={user.image}
                     alt={user.name || "User"}
-                    className="h-8 w-8 rounded-full"
+                    className="h-9 w-9 rounded-full ring-2 ring-indigo-200"
                   />
                 )}
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-semibold text-slate-700">
                   {user.name}
                 </span>
               </div>
               <button
                 onClick={() => signOut({ callbackUrl: "/login" })}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition"
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl hover:from-red-600 hover:to-pink-700 transition shadow-md hover:shadow-lg"
               >
                 <LogOut className="h-4 w-4" />
-                <span>Logout</span>
+                <span className="font-medium">Logout</span>
               </button>
             </div>
           </div>
@@ -218,96 +218,94 @@ export default function DashboardClient({
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
                   Total Tickets
                 </p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
+                <p className="text-4xl font-bold text-slate-900 mt-2">
                   {stats.totalTickets}
                 </p>
               </div>
-              <div className="bg-purple-100 p-3 rounded-lg">
-                <Ticket className="h-6 w-6 text-purple-600" />
+              <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-3.5 rounded-xl shadow-md">
+                <Ticket className="h-7 w-7 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-emerald-100 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
                   Tickets Sold
                 </p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
+                <p className="text-4xl font-bold text-slate-900 mt-2">
                   {stats.soldTickets}
                 </p>
               </div>
-              <div className="bg-green-100 p-3 rounded-lg">
-                <BarChart3 className="h-6 w-6 text-green-600" />
+              <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-3.5 rounded-xl shadow-md">
+                <BarChart3 className="h-7 w-7 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-blue-100 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
                   Total Revenue
                 </p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
+                <p className="text-4xl font-bold text-slate-900 mt-2">
                   ${stats.totalRevenue.toFixed(2)}
                 </p>
               </div>
-              <div className="bg-blue-100 p-3 rounded-lg">
-                <DollarSign className="h-6 w-6 text-blue-600" />
+              <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-3.5 rounded-xl shadow-md">
+                <DollarSign className="h-7 w-7 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-emerald-100 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
                   Total Profit
                 </p>
                 <p
-                  className={`text-3xl font-bold mt-2 ${
-                    stats.totalProfit >= 0 ? "text-green-600" : "text-red-600"
+                  className={`text-4xl font-bold mt-2 ${
+                    stats.totalProfit >= 0 ? "text-emerald-600" : "text-rose-600"
                   }`}
                 >
                   ${stats.totalProfit.toFixed(2)}
                 </p>
               </div>
               <div
-                className={`p-3 rounded-lg ${
-                  stats.totalProfit >= 0 ? "bg-green-100" : "bg-red-100"
+                className={`p-3.5 rounded-xl shadow-md ${
+                  stats.totalProfit >= 0
+                    ? "bg-gradient-to-br from-emerald-500 to-green-600"
+                    : "bg-gradient-to-br from-rose-500 to-red-600"
                 }`}
               >
-                <TrendingUp
-                  className={`h-6 w-6 ${
-                    stats.totalProfit >= 0 ? "text-green-600" : "text-red-600"
-                  }`}
-                />
+                <TrendingUp className="h-7 w-7 text-white" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Filters and Actions */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6 border border-indigo-100">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
             <div className="flex flex-col sm:flex-row gap-4 flex-1">
               {/* Search */}
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-indigo-400" />
                 <input
                   type="text"
                   placeholder="Search by artist, location, or order..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 placeholder-slate-400"
                 />
               </div>
 
@@ -315,7 +313,7 @@ export default function DashboardClient({
               <select
                 value={selectedPlatform}
                 onChange={(e) => setSelectedPlatform(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium bg-white"
               >
                 {PLATFORMS.map((platform) => (
                   <option key={platform} value={platform}>
@@ -328,7 +326,7 @@ export default function DashboardClient({
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-700 font-medium bg-white"
               >
                 {STATUSES.map((status) => (
                   <option key={status} value={status}>
@@ -341,7 +339,7 @@ export default function DashboardClient({
             {/* Add Ticket Button */}
             <button
               onClick={handleAddTicket}
-              className="flex items-center justify-center space-x-2 px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition shadow-md"
+              className="flex items-center justify-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition shadow-lg hover:shadow-xl font-semibold"
             >
               <Plus className="h-5 w-5" />
               <span>Add Ticket</span>
@@ -350,49 +348,51 @@ export default function DashboardClient({
         </div>
 
         {/* Tickets Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-indigo-100 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gradient-to-r from-slate-50 to-indigo-50 border-b-2 border-indigo-100">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Event
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Seat Info
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Platform
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Buy Price
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Sale Price
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Profit
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-slate-100">
                 {filteredTickets.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center justify-center text-gray-500">
-                        <Ticket className="h-12 w-12 mb-3 opacity-50" />
-                        <p className="text-lg font-medium">No tickets found</p>
-                        <p className="text-sm mt-1">
-                          Add your first ticket to get started
+                    <td colSpan={9} className="px-6 py-16 text-center">
+                      <div className="flex flex-col items-center justify-center text-slate-500">
+                        <div className="bg-gradient-to-br from-indigo-100 to-purple-100 p-6 rounded-2xl mb-4">
+                          <Ticket className="h-16 w-16 text-indigo-400" />
+                        </div>
+                        <p className="text-xl font-bold text-slate-700">No tickets found</p>
+                        <p className="text-sm mt-2 text-slate-500">
+                          Add your first ticket to get started tracking your sales
                         </p>
                       </div>
                     </td>
@@ -401,27 +401,27 @@ export default function DashboardClient({
                   filteredTickets.map((ticket) => (
                     <tr
                       key={ticket.id}
-                      className="hover:bg-gray-50 transition"
+                      className="hover:bg-indigo-50/30 transition-colors"
                     >
                       <td className="px-6 py-4">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-bold text-slate-800">
                             {ticket.artist || "N/A"}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-slate-600 font-medium">
                             {ticket.location || "N/A"}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm font-semibold text-slate-700">
                           {ticket.eventDate
                             ? format(new Date(ticket.eventDate), "MMM d, yyyy")
                             : "N/A"}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm font-medium text-slate-700">
                           {ticket.section && `Sec ${ticket.section}`}
                           {ticket.row && `, Row ${ticket.row}`}
                           {ticket.seat && `, Seat ${ticket.seat}`}
@@ -429,22 +429,22 @@ export default function DashboardClient({
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                        <span className="px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-lg bg-gradient-to-r from-purple-100 to-indigo-100 text-indigo-700 border border-indigo-200">
                           {ticket.platform || "N/A"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-800">
                         ${ticket.buyInPrice?.toFixed(2) || "0.00"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-800">
                         ${ticket.salePrice?.toFixed(2) || "0.00"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`text-sm font-semibold ${
+                          className={`text-sm font-extrabold ${
                             (ticket.profit || 0) >= 0
-                              ? "text-green-600"
-                              : "text-red-600"
+                              ? "text-emerald-600"
+                              : "text-rose-600"
                           }`}
                         >
                           ${ticket.profit?.toFixed(2) || "0.00"}
@@ -452,14 +452,14 @@ export default function DashboardClient({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          className={`px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-lg border ${
                             ticket.status === "Sold"
-                              ? "bg-green-100 text-green-800"
+                              ? "bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-700 border-emerald-200"
                               : ticket.status === "Listed"
-                              ? "bg-blue-100 text-blue-800"
+                              ? "bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border-blue-200"
                               : ticket.status === "Pending"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-gray-100 text-gray-800"
+                              ? "bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-700 border-amber-200"
+                              : "bg-gradient-to-r from-slate-100 to-gray-100 text-slate-700 border-slate-200"
                           }`}
                         >
                           {ticket.status || "N/A"}
@@ -468,15 +468,15 @@ export default function DashboardClient({
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
                           onClick={() => handleEditTicket(ticket)}
-                          className="text-blue-600 hover:text-blue-900 mr-4"
+                          className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 p-2 rounded-lg transition mr-2"
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-5 w-5" />
                         </button>
                         <button
                           onClick={() => handleDeleteTicket(ticket.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-rose-600 hover:text-rose-800 hover:bg-rose-50 p-2 rounded-lg transition"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-5 w-5" />
                         </button>
                       </td>
                     </tr>
