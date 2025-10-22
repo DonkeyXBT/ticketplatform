@@ -1,6 +1,6 @@
 # Discord Bot Setup Guide
 
-This guide will help you set up the Discord bot for ticket delivery reminders.
+This guide will help you set up the standalone Discord bot for ticket delivery reminders.
 
 ## Features
 
@@ -8,12 +8,18 @@ This guide will help you set up the Discord bot for ticket delivery reminders.
 - 📱 Direct messages to users via Discord
 - ✅ One-click acknowledgment to stop reminders
 - 🎯 Smart tracking to avoid duplicate notifications
+- 🚀 Runs independently on your own server
+
+## Architecture
+
+The bot runs as a **standalone application** on a separate server and communicates with your ticket platform via secure API endpoints.
 
 ## Prerequisites
 
 1. A Discord account
 2. Administrator access to a Discord server (or create your own)
-3. Access to your Vercel deployment settings
+3. A server to host the bot (VPS, Railway, Render, etc.)
+4. Access to your Vercel deployment settings
 
 ## Step 1: Create a Discord Bot
 
@@ -87,45 +93,59 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 3. Enter your Discord User ID (from Step 4)
 4. Save your profile
 
-## Step 7: Set Up Vercel Cron Job
+## Step 7: Set Up Bot API Key
 
-Create a file `vercel.json` in your project root:
+Generate a secure API key for bot authentication:
 
-```json
-{
-  "crons": [
-    {
-      "path": "/api/cron/check-delivery-reminders",
-      "schedule": "0 9 * * *"
-    }
-  ]
-}
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-This runs the check daily at 9:00 AM UTC.
-
-### Add Cron Secret to Vercel
+### Add API Key to Vercel
 
 1. Go to your Vercel project dashboard
 2. Navigate to **Settings** → **Environment Variables**
 3. Add:
-   - Key: `CRON_SECRET`
-   - Value: The secret you generated in Step 5
+   - Key: `BOT_API_KEY`
+   - Value: The API key you just generated
    - Select all environments (Production, Preview, Development)
-4. Add:
-   - Key: `DISCORD_BOT_TOKEN`
-   - Value: Your Discord bot token from Step 2
-   - Select all environments
-5. Add:
-   - Key: `NEXT_PUBLIC_APP_URL`
-   - Value: Your production URL (e.g., `https://ticketplatform.vercel.app`)
-   - Select all environments
 
-## Step 8: Deploy
+⚠️ **Important:** Save this API key - you'll need it when setting up the standalone bot
+
+## Step 8: Deploy Main App
 
 1. Commit all changes to Git
 2. Push to your repository
 3. Vercel will automatically deploy
+
+## Step 9: Set Up Standalone Bot
+
+The Discord bot runs as a **separate application** on your own server. This provides better reliability and control.
+
+**📚 See the complete bot setup guide:** [`discord-bot/README.md`](./discord-bot/README.md)
+
+### Quick Start
+
+1. Navigate to the `discord-bot` directory
+2. Copy `.env.example` to `.env` and configure:
+   ```env
+   DISCORD_BOT_TOKEN=your_bot_token_from_step_2
+   API_URL=https://your-app.vercel.app
+   API_KEY=same_as_BOT_API_KEY_from_step_7
+   ```
+3. Install dependencies: `npm install`
+4. Run the bot: `npm start`
+
+### Hosting Options
+
+Choose one of these free/low-cost options:
+
+- **Railway.app** - Free tier available, easy deployment
+- **Render.com** - Free background workers
+- **Your VPS** - Use PM2 for process management
+- **Docker** - Run anywhere with Docker support
+
+See [`discord-bot/README.md`](./discord-bot/README.md) for detailed deployment instructions.
 
 ## How It Works
 

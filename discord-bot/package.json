@@ -1,0 +1,19 @@
+{
+  "name": "ticket-delivery-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for automated ticket delivery reminders",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": ["discord", "bot", "tickets"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.7",
+    "node-cron": "^3.0.3"
+  }
+}

@@ -1,18 +1,20 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
-export async function POST(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(req: Request) {
   try {
-    const { id } = await params
-    const body = await req.json()
-    const { discordUserId } = body
+    // Verify API key
+    const apiKey = req.headers.get("x-api-key")
+    if (!apiKey || apiKey !== process.env.BOT_API_KEY) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
 
-    if (!discordUserId) {
+    const body = await req.json()
+    const { ticketId, discordUserId } = body
+
+    if (!ticketId || !discordUserId) {
       return NextResponse.json(
-        { error: "Discord user ID is required" },
+        { error: "ticketId and discordUserId are required" },
         { status: 400 }
       )
     }
@@ -20,7 +22,7 @@ export async function POST(
     // Find the ticket and verify it belongs to the Discord user
     const ticket = await prisma.ticket.findFirst({
       where: {
-        id,
+        id: ticketId,
         user: {
           discordId: discordUserId,
         },
@@ -39,7 +41,7 @@ export async function POST(
 
     // Update ticket to mark delivery as acknowledged
     const updatedTicket = await prisma.ticket.update({
-      where: { id },
+      where: { id: ticketId },
       data: {
         deliveryReminderAcknowledged: true,
       },
@@ -47,7 +49,10 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      ticket: updatedTicket,
+      ticket: {
+        id: updatedTicket.id,
+        acknowledged: updatedTicket.deliveryReminderAcknowledged,
+      },
     })
   } catch (error) {
     console.error("Error acknowledging delivery:", error)
