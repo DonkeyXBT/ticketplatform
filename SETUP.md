@@ -4,11 +4,15 @@ Follow these steps to get your Ticket Platform running:
 
 ## 1. Set Up Neon Database (2 minutes)
 
+**📖 Detailed guide**: See `NEON_DATABASE_SETUP.md` for complete step-by-step instructions!
+
+**Quick steps:**
 1. Go to **https://console.neon.tech/**
-2. Click "Create Project"
-3. Choose a name (e.g., "ticketplatform")
-4. Click "Create Project"
-5. Copy the connection string that appears
+2. Sign up / Login
+3. Click "Create Project" → Name it "ticketplatform"
+4. Choose your region (closest to you)
+5. Copy the connection string (starts with `postgresql://...`)
+6. **IMPORTANT**: Make sure it ends with `?sslmode=require`
 
 ## 2. Set Up Discord OAuth (3 minutes)
 
@@ -49,11 +53,23 @@ openssl rand -base64 32
 
 ## 4. Initialize Database (30 seconds)
 
+### Option 1: Use the setup script (recommended)
 ```bash
+./setup-database.sh
+```
+
+### Option 2: Manual setup
+```bash
+npx prisma generate
 npx prisma db push
 ```
 
-This creates all the necessary tables in your Neon database.
+This creates all 5 tables in your Neon database:
+- ✅ User (authentication)
+- ✅ Account (OAuth)
+- ✅ Session (login sessions)
+- ✅ VerificationToken (security)
+- ✅ Ticket (your ticket data with 18 fields)
 
 ## 5. Start the Application (10 seconds)
 
