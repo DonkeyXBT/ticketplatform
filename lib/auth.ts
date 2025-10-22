@@ -9,8 +9,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Discord({
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: "identify email",
+        },
+      },
     }),
   ],
+  session: {
+    strategy: "database",
+    maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
+  },
   callbacks: {
     session({ session, user }) {
       session.user.id = user.id

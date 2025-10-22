@@ -51,11 +51,17 @@ npm install
 
 ### 4. Set up Discord OAuth
 
+**📖 Detailed guide available**: See `DISCORD_SETUP.md` for complete step-by-step instructions!
+
+Quick steps:
 1. Go to https://discord.com/developers/applications
 2. Click "New Application" and give it a name
 3. Go to the "OAuth2" section
-4. Add redirect URL: \`http://localhost:3000/api/auth/callback/discord\`
+4. Add BOTH redirect URLs:
+   - Local: \`http://localhost:3000/api/auth/callback/discord\`
+   - Production: \`https://ticketplatform.vercel.app/api/auth/callback/discord\`
 5. Copy your Client ID and Client Secret
+6. Click "Save Changes"
 
 ### 5. Configure environment variables
 

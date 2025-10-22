@@ -12,12 +12,16 @@ Follow these steps to get your Ticket Platform running:
 
 ## 2. Set Up Discord OAuth (3 minutes)
 
+**📖 See detailed guide**: Check `DISCORD_SETUP.md` for step-by-step instructions with screenshots!
+
+**Quick steps:**
 1. Go to **https://discord.com/developers/applications**
-2. Click "New Application"
-3. Name it "Ticket Platform" (or whatever you like)
-4. Go to "OAuth2" in the left sidebar
-5. Click "Add Redirect" and add: `http://localhost:3000/api/auth/callback/discord`
-6. Copy your **Client ID** and **Client Secret**
+2. Click "New Application" → Name it "Ticket Platform"
+3. Go to "OAuth2" → Copy Client ID and Client Secret
+4. Add redirect URLs:
+   - `http://localhost:3000/api/auth/callback/discord` (for local)
+   - `https://ticketplatform.vercel.app/api/auth/callback/discord` (for production)
+5. Click "Save Changes"
 
 ## 3. Configure Environment Variables (1 minute)
 
