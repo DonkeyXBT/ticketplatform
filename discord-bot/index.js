@@ -178,15 +178,24 @@ async function checkDeliveryReminders() {
 
   try {
     const now = new Date()
-    const sevenDaysFromNow = new Date(now)
+
+    // Set to start of today to include all events happening today
+    const startOfToday = new Date(now)
+    startOfToday.setHours(0, 0, 0, 0)
+
+    // Calculate 7 days from now (end of that day)
+    const sevenDaysFromNow = new Date(startOfToday)
     sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
+    sevenDaysFromNow.setHours(23, 59, 59, 999)
+
+    console.log(`📅 Date range: ${startOfToday.toLocaleDateString()} to ${sevenDaysFromNow.toLocaleDateString()}`)
 
     // Find all sold tickets with event dates within 7 days that haven't been acknowledged
     const tickets = await prisma.ticket.findMany({
       where: {
         status: 'Sold',
         eventDate: {
-          gte: now,
+          gte: startOfToday,
           lte: sevenDaysFromNow,
         },
         deliveryReminderAcknowledged: false,
@@ -212,10 +221,18 @@ async function checkDeliveryReminders() {
       },
     })
 
+    console.log(`📋 Found ${tickets.length} total ticket(s) matching criteria`)
+
+    // Log details about each ticket found
+    tickets.forEach((ticket) => {
+      const daysUntil = Math.ceil((new Date(ticket.eventDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+      console.log(`   📌 Ticket ${ticket.id}: ${ticket.artist} - ${daysUntil} day(s) until event - Has Discord ID: ${!!ticket.user.discordId}`)
+    })
+
     // Filter out tickets where user doesn't have Discord ID
     const validTickets = tickets.filter((ticket) => ticket.user.discordId)
 
-    console.log(`📊 Found ${validTickets.length} ticket(s) needing reminders`)
+    console.log(`📊 ${validTickets.length} ticket(s) have Discord ID and will receive reminders`)
 
     if (validTickets.length === 0) {
       console.log('✅ No tickets need reminders right now')
@@ -224,6 +241,9 @@ async function checkDeliveryReminders() {
 
     // Send reminders for each ticket
     for (const ticket of validTickets) {
+      const daysUntil = Math.ceil((new Date(ticket.eventDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+      console.log(`📨 Sending reminder to ${ticket.user.name} for "${ticket.artist}" (${daysUntil} days until event)`)
+
       const messageId = await sendDeliveryReminder({
         id: ticket.id,
         artist: ticket.artist,
@@ -248,6 +268,9 @@ async function checkDeliveryReminders() {
             discordMessageId: messageId,
           },
         })
+        console.log(`   ✅ Reminder sent successfully (Message ID: ${messageId})`)
+      } else {
+        console.log(`   ❌ Failed to send reminder`)
       }
 
       // Add delay between messages to avoid rate limiting
@@ -256,7 +279,7 @@ async function checkDeliveryReminders() {
 
     console.log(`✅ Processed ${validTickets.length} reminder(s)`)
   } catch (error) {
-    console.error('Error checking delivery reminders:', error)
+    console.error('❌ Error checking delivery reminders:', error)
   }
 }
 
