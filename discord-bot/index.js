@@ -189,6 +189,46 @@ async function checkDeliveryReminders() {
     sevenDaysFromNow.setHours(23, 59, 59, 999)
 
     console.log(`📅 Date range: ${startOfToday.toLocaleDateString()} to ${sevenDaysFromNow.toLocaleDateString()}`)
+    console.log(`📅 Full date range (ISO): ${startOfToday.toISOString()} to ${sevenDaysFromNow.toISOString()}`)
+
+    // First, let's check ALL tickets in the database for debugging
+    console.log('\n🔍 DEBUG: Checking all tickets in database...')
+    const allTickets = await prisma.ticket.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            discordId: true,
+          },
+        },
+      },
+    })
+    console.log(`   Total tickets in database: ${allTickets.length}`)
+
+    // Check tickets with Sold status
+    const soldTickets = allTickets.filter(t => t.status === 'Sold')
+    console.log(`   Tickets with status 'Sold': ${soldTickets.length}`)
+
+    // Check tickets with event dates
+    const ticketsWithEventDate = soldTickets.filter(t => t.eventDate)
+    console.log(`   Sold tickets with eventDate set: ${ticketsWithEventDate.length}`)
+
+    // Check tickets within date range
+    const ticketsInRange = ticketsWithEventDate.filter(t => {
+      const eventDate = new Date(t.eventDate)
+      return eventDate >= startOfToday && eventDate <= sevenDaysFromNow
+    })
+    console.log(`   Sold tickets within 7-day range: ${ticketsInRange.length}`)
+
+    if (ticketsInRange.length > 0) {
+      console.log('\n   📋 Details of tickets in range:')
+      ticketsInRange.forEach(ticket => {
+        const eventDate = new Date(ticket.eventDate)
+        const daysUntil = Math.ceil((eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        console.log(`   - ${ticket.artist || 'No artist'} | Event: ${eventDate.toLocaleDateString()} (${daysUntil} days) | Status: ${ticket.status} | Acknowledged: ${ticket.deliveryReminderAcknowledged} | User Discord ID: ${ticket.user.discordId || 'NONE'}`)
+      })
+    }
 
     // Find all sold tickets with event dates within 7 days that haven't been acknowledged
     const tickets = await prisma.ticket.findMany({
@@ -221,7 +261,7 @@ async function checkDeliveryReminders() {
       },
     })
 
-    console.log(`📋 Found ${tickets.length} total ticket(s) matching criteria`)
+    console.log(`\n📋 Found ${tickets.length} total ticket(s) matching all criteria (including reminder timing)`)
 
     // Log details about each ticket found
     tickets.forEach((ticket) => {
