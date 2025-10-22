@@ -137,11 +137,15 @@ Profit = Sale Price - Buy-in Price
 
 ### Deploy to Vercel
 
-1. Push your code to GitHub
+**Optimized for Vercel** - The middleware has been optimized to only 33.8 kB (well under the 1 MB Edge Function limit).
+
+1. Push your code to GitHub ✅ (Already done!)
 2. Go to https://vercel.com
-3. Import your repository
-4. Add your environment variables
+3. Import your repository: `DonkeyXBT/ticketplatform`
+4. Add your environment variables (see below)
 5. Deploy!
+
+The application is fully compatible with Vercel's free tier.
 
 ### Production Environment Variables
 
