@@ -13,6 +13,7 @@ interface Ticket {
   section: string | null
   row: string | null
   seat: string | null
+  quantity: number | null
   email: string | null
   orderNumber: string | null
   buyInPrice: number | null
@@ -55,6 +56,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
     section: "",
     row: "",
     seat: "",
+    quantity: "1",
     email: "",
     orderNumber: "",
     buyInPrice: "",
@@ -85,6 +87,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
         section: ticket.section || "",
         row: ticket.row || "",
         seat: ticket.seat || "",
+        quantity: ticket.quantity?.toString() || "1",
         email: ticket.email || "",
         orderNumber: ticket.orderNumber || "",
         buyInPrice: ticket.buyInPrice?.toString() || "",
@@ -256,6 +259,21 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                 placeholder="e.g., 15, 16-17"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                Quantity
+              </label>
+              <input
+                type="number"
+                name="quantity"
+                value={formData.quantity}
+                onChange={handleChange}
+                min="1"
+                className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
+                placeholder="1"
               />
             </div>
 

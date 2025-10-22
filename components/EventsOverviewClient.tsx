@@ -28,6 +28,7 @@ interface Ticket {
   section: string | null
   row: string | null
   seat: string | null
+  quantity: number | null
   email: string | null
   orderNumber: string | null
   buyInPrice: number | null
@@ -113,19 +114,20 @@ export default function EventsOverviewClient({
       }
 
       const group = groups.get(eventKey)!
+      const quantity = ticket.quantity || 1
       group.tickets.push(ticket)
-      group.totalTickets++
+      group.totalTickets += quantity
 
       if (ticket.status === "Sold") {
-        group.soldTickets++
+        group.soldTickets += quantity
       } else if (ticket.status === "Listed") {
-        group.listedTickets++
+        group.listedTickets += quantity
       }
 
-      // Calculate financials
+      // Calculate financials (multiply by quantity)
       if (ticket.buyInPrice && ticket.buyCurrency) {
         group.totalInvestment += convertCurrencySync(
-          ticket.buyInPrice,
+          ticket.buyInPrice * quantity,
           ticket.buyCurrency,
           displayCurrency
         )
@@ -133,7 +135,7 @@ export default function EventsOverviewClient({
 
       if (ticket.salePrice && ticket.sellCurrency && ticket.status === "Sold") {
         group.totalRevenue += convertCurrencySync(
-          ticket.salePrice,
+          ticket.salePrice * quantity,
           ticket.sellCurrency,
           displayCurrency
         )
@@ -141,7 +143,7 @@ export default function EventsOverviewClient({
 
       if (ticket.profit && ticket.profitCurrency && ticket.status === "Sold") {
         group.totalProfit += convertCurrencySync(
-          ticket.profit,
+          ticket.profit * quantity,
           ticket.profitCurrency,
           displayCurrency
         )
@@ -391,7 +393,7 @@ export default function EventsOverviewClient({
                             key={ticket.id}
                             className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow"
                           >
-                            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 text-sm">
+                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4 text-sm">
                               <div>
                                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
                                   Section
@@ -414,6 +416,14 @@ export default function EventsOverviewClient({
                                 </p>
                                 <p className="font-bold text-slate-900 dark:text-white">
                                   {ticket.seat || "N/A"}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                                  Qty
+                                </p>
+                                <p className="font-black text-emerald-600 dark:text-emerald-400">
+                                  {ticket.quantity || 1}
                                 </p>
                               </div>
                               <div>

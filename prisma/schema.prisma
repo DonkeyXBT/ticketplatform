@@ -73,6 +73,7 @@ model Ticket {
   section                     String?
   row                         String?
   seat                        String?
+  quantity                    Int       @default(1)
   email                       String?
   orderNumber                 String?
   buyInPrice                  Float?

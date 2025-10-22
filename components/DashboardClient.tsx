@@ -31,6 +31,7 @@ interface Ticket {
   section: string | null
   row: string | null
   seat: string | null
+  quantity: number | null
   email: string | null
   orderNumber: string | null
   buyInPrice: number | null
@@ -115,21 +116,26 @@ export default function DashboardClient({
 
   // Calculate statistics with currency conversion
   const stats = useMemo(() => {
-    const totalTickets = tickets.length
-    const soldTickets = tickets.filter((t) => t.status === "Sold").length
+    // Sum up quantities instead of counting entries
+    const totalTickets = tickets.reduce((sum, t) => sum + (t.quantity || 1), 0)
+    const soldTickets = tickets
+      .filter((t) => t.status === "Sold")
+      .reduce((sum, t) => sum + (t.quantity || 1), 0)
 
-    // Convert all amounts to display currency
+    // Convert all amounts to display currency (multiply by quantity)
     const totalRevenue = tickets.reduce((sum, t) => {
       const amount = t.salePrice || 0
+      const quantity = t.quantity || 1
       const ticketCurrency = t.sellCurrency || "USD"
-      const converted = convertCurrencySync(amount, ticketCurrency, displayCurrency)
+      const converted = convertCurrencySync(amount * quantity, ticketCurrency, displayCurrency)
       return sum + converted
     }, 0)
 
     const totalCost = tickets.reduce((sum, t) => {
       const amount = t.buyInPrice || 0
+      const quantity = t.quantity || 1
       const ticketCurrency = t.buyCurrency || "USD"
-      const converted = convertCurrencySync(amount, ticketCurrency, displayCurrency)
+      const converted = convertCurrencySync(amount * quantity, ticketCurrency, displayCurrency)
       return sum + converted
     }, 0)
 
@@ -466,6 +472,9 @@ export default function DashboardClient({
                       Seat Info
                     </th>
                     <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Qty
+                    </th>
+                    <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                       Platform
                     </th>
                     <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
@@ -488,7 +497,7 @@ export default function DashboardClient({
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-100 dark:divide-slate-700">
                 {filteredTickets.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="px-6 py-16 text-center">
+                    <td colSpan={10} className="px-6 py-16 text-center">
                       <div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400">
                         <div className="bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 p-6 rounded-2xl mb-4">
                           <Ticket className="h-16 w-16 text-indigo-400 dark:text-indigo-500" />
@@ -530,6 +539,11 @@ export default function DashboardClient({
                           {ticket.seat && `, Seat ${ticket.seat}`}
                           {!ticket.section && !ticket.row && !ticket.seat && "N/A"}
                         </div>
+                      </td>
+                      <td className="px-4 py-2 whitespace-nowrap">
+                        <span className="px-2.5 py-1 inline-flex text-sm leading-5 font-black rounded-lg bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700">
+                          {ticket.quantity || 1}
+                        </span>
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap">
                         <span className="px-3 py-1.5 inline-flex text-xs leading-5 font-black rounded-lg bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/50 dark:to-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700">
@@ -677,7 +691,7 @@ export default function DashboardClient({
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2 text-sm">
+                    <div className="grid grid-cols-4 gap-2 text-sm">
                       <div>
                         <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
                           Section
@@ -700,6 +714,14 @@ export default function DashboardClient({
                         </p>
                         <p className="font-bold text-slate-900 dark:text-white">
                           {ticket.seat || "N/A"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                          Qty
+                        </p>
+                        <p className="font-black text-emerald-600 dark:text-emerald-400">
+                          {ticket.quantity || 1}
                         </p>
                       </div>
                     </div>
