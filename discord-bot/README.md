@@ -55,19 +55,7 @@ A standalone Discord bot that sends automated daily reminders for ticket deliver
 4. Copy the generated URL and open it in your browser
 5. Select your Discord server and authorize
 
-### Step 3: Generate API Key
-
-Run this command to generate a secure API key:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-Save this key - you'll need it in two places:
-1. Bot's `.env` file (as `API_KEY`)
-2. Main app's environment variables (as `BOT_API_KEY`)
-
-### Step 4: Configure Environment Variables
+### Step 3: Configure Environment Variables
 
 1. Navigate to the `discord-bot` directory
 2. Copy `.env.example` to `.env`:
@@ -82,39 +70,26 @@ cp .env.example .env
 # Discord Bot Token from Step 1
 DISCORD_BOT_TOKEN=your_bot_token_here
 
-# Your Next.js app URL
-API_URL=https://ticketplatform.vercel.app
-
-# API Key from Step 3
-API_KEY=your_api_key_here
+# Database URL (PostgreSQL connection string)
+DATABASE_URL=postgresql://neondb_owner:npg_IrioLvuGnP52@ep-old-star-ag7pe8g1-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require
 ```
 
-### Step 5: Configure Main App
-
-Add the API key to your main app's environment variables:
-
-**Vercel Dashboard:**
-1. Go to Project Settings → Environment Variables
-2. Add:
-   - Key: `BOT_API_KEY`
-   - Value: (same as `API_KEY` from Step 3)
-   - Environments: Production, Preview, Development
-
-**Local Development:**
-Add to your `.env` file:
-
-```env
-BOT_API_KEY=your_api_key_here
-```
-
-### Step 6: Install Dependencies
+### Step 4: Install Dependencies
 
 ```bash
 cd discord-bot
 npm install
 ```
 
-### Step 7: Run the Bot
+### Step 5: Generate Prisma Client
+
+```bash
+npm run prisma:generate
+```
+
+This generates the Prisma client for database access.
+
+### Step 6: Run the Bot
 
 **Development (with auto-restart):**
 ```bash
@@ -221,16 +196,17 @@ docker run -d --name ticket-bot --env-file .env ticket-bot
 
 5. You should receive a DM from the bot
 
-### Manual API Test
+### Manual Database Test
 
-Test if bot can access your API:
+Test if bot can access the database:
 
 ```bash
-curl -X GET "https://your-app.vercel.app/api/bot/tickets-needing-reminders" \
-  -H "X-API-Key: your_api_key"
+cd discord-bot
+npm run prisma:generate
+node -e "import('./db.js').then(({prisma}) => prisma.ticket.count().then(count => console.log('Tickets in DB:', count)).finally(() => prisma.\$disconnect()))"
 ```
 
-Should return JSON with tickets list.
+Should return the count of tickets in your database.
 
 ## Troubleshooting
 
@@ -249,16 +225,20 @@ node --version  # Should be v18 or higher
 
 ### Bot can't fetch tickets
 
-**Error:** `401 Unauthorized`
+**Error:** Database connection issues
 
 **Check:**
-- Is `API_KEY` in bot's `.env` correct?
-- Is `BOT_API_KEY` set in main app?
-- Do both keys match exactly?
+- Is `DATABASE_URL` correct in bot's `.env`?
+- Is the database accessible from your server?
+- Did you run `npm run prisma:generate`?
 
 **Solution:**
-- Regenerate API key and update both places
-- Redeploy main app after updating `BOT_API_KEY`
+```bash
+# Test database connection
+npm run prisma:generate
+# Then restart the bot
+npm start
+```
 
 ### Messages not being received
 
@@ -279,14 +259,15 @@ node --version  # Should be v18 or higher
 **Error when clicking "Done"**
 
 **Check:**
-- Is `API_URL` correct in bot's `.env`?
-- Is main app deployed and accessible?
+- Is bot connected to database?
 - Does Discord User ID in profile match actual Discord ID?
+- Check bot console logs for errors
 
 **Solution:**
-1. Verify `API_URL` points to deployed app
-2. Check main app logs for errors
+1. Verify database connection is working
+2. Check bot logs: `pm2 logs ticket-bot`
 3. Ensure user's Discord ID is saved in profile
+4. Restart bot if needed
 
 ### Bot offline/crashed
 
@@ -330,47 +311,49 @@ Check deployment logs in their dashboard
 
 ## Security
 
-- ⚠️ Never commit `.env` files
+- ⚠️ Never commit `.env` files to Git
 - ⚠️ Keep Discord bot token secret
-- ⚠️ Use strong random API keys (32+ characters)
-- ⚠️ Rotate API keys periodically
-- ⚠️ Use HTTPS for `API_URL` in production
+- ⚠️ Protect your `DATABASE_URL` - it contains credentials
+- ⚠️ Use SSL for database connections (`?sslmode=require`)
+- ⚠️ Restrict database access by IP if possible
+- ⚠️ Regularly rotate database passwords
 
 ## Architecture
 
 ```
-┌─────────────────┐      API Calls      ┌──────────────────┐
+┌─────────────────┐      Discord API     ┌──────────────────┐
 │                 │◄────────────────────►│                  │
-│  Discord Bot    │   (Authenticated)    │  Next.js App     │
-│  (This Server)  │                      │  (Vercel)        │
+│  Discord Bot    │                      │  Discord         │
+│  (This Server)  │                      │  Servers         │
 │                 │                      │                  │
-└────────┬────────┘                      └────────┬─────────┘
-         │                                        │
-         │ Discord API                            │
-         ▼                                        ▼
-   ┌──────────┐                          ┌───────────────┐
-   │ Discord  │                          │  PostgreSQL   │
-   │ Servers  │                          │  (Neon)       │
-   └──────────┘                          └───────────────┘
+└────────┬────────┘                      └──────────────────┘
+         │
+         │ Direct Database Access
+         │ (Prisma Client)
+         ▼
+   ┌───────────────┐
+   │  PostgreSQL   │
+   │  (Neon)       │
+   └───────────────┘
+         ▲
+         │
+         │ Web App Database Access
+         │
+   ┌────────┬─────────┐
+   │  Next.js App     │
+   │  (Vercel)        │
+   └──────────────────┘
 ```
 
-## API Endpoints Used
+## Database Access
 
-The bot communicates with these endpoints:
+The bot connects directly to your PostgreSQL database using Prisma:
 
-1. **GET** `/api/bot/tickets-needing-reminders`
-   - Fetches tickets needing reminders
-   - Requires `X-API-Key` header
-
-2. **POST** `/api/bot/update-reminder-sent`
-   - Updates ticket after sending reminder
-   - Requires `X-API-Key` header
-   - Body: `{ ticketId, messageId }`
-
-3. **POST** `/api/bot/acknowledge-delivery`
-   - Marks ticket as acknowledged
-   - Requires `X-API-Key` header
-   - Body: `{ ticketId, discordUserId }`
+- **Reads** ticket data to find reminders needed
+- **Updates** tickets when reminders are sent
+- **Updates** tickets when users acknowledge delivery
+- Uses the same database as your Next.js app
+- No API layer required - direct and efficient
 
 ## Customization
 

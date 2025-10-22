@@ -1,21 +1,20 @@
 import { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
+import { prisma } from './db.js'
 
 dotenv.config()
 
 // Configuration
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
-const API_URL = process.env.API_URL || 'http://localhost:3000'
-const API_KEY = process.env.API_KEY
 
 if (!DISCORD_BOT_TOKEN) {
   console.error('❌ DISCORD_BOT_TOKEN is not set')
   process.exit(1)
 }
 
-if (!API_KEY) {
-  console.error('❌ API_KEY is not set')
+if (!process.env.DATABASE_URL) {
+  console.error('❌ DATABASE_URL is not set')
   process.exit(1)
 }
 
@@ -30,10 +29,10 @@ const client = new Client({
 })
 
 // Bot ready event
-client.once('ready', () => {
+client.once('clientReady', () => {
   console.log(`✅ Discord bot logged in as ${client.user.tag}`)
   console.log(`🌐 Connected to ${client.guilds.cache.size} servers`)
-  console.log(`🔗 API URL: ${API_URL}`)
+  console.log(`🔗 Database connected`)
   console.log(`⏰ Cron job scheduled for 9:00 AM UTC daily`)
 })
 
@@ -48,40 +47,44 @@ client.on('interactionCreate', async (interaction) => {
     try {
       console.log(`📝 User ${interaction.user.tag} acknowledged delivery for ticket ${ticketId}`)
 
-      // Call API to update ticket
-      const response = await fetch(`${API_URL}/api/bot/acknowledge-delivery`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': API_KEY,
+      // Find the ticket and verify it belongs to the Discord user
+      const ticket = await prisma.ticket.findFirst({
+        where: {
+          id: ticketId,
+          user: {
+            discordId: interaction.user.id,
+          },
         },
-        body: JSON.stringify({
-          ticketId,
-          discordUserId: interaction.user.id,
-        }),
       })
 
-      if (response.ok) {
-        await interaction.update({
-          content: '✅ **Marked as Done!** You will no longer receive reminders for this ticket.',
-          embeds: [],
-          components: [],
-        })
-        console.log(`✅ Ticket ${ticketId} acknowledged successfully`)
-      } else {
-        const error = await response.text()
-        console.error(`❌ Failed to acknowledge ticket: ${error}`)
+      if (!ticket) {
         await interaction.reply({
-          content: '❌ Failed to update ticket. Please try again or contact support.',
+          content: '❌ Ticket not found or doesn\'t belong to you.',
           ephemeral: true,
         })
+        return
       }
+
+      // Update ticket to mark delivery as acknowledged
+      await prisma.ticket.update({
+        where: { id: ticketId },
+        data: {
+          deliveryReminderAcknowledged: true,
+        },
+      })
+
+      await interaction.update({
+        content: '✅ **Marked as Done!** You will no longer receive reminders for this ticket.',
+        embeds: [],
+        components: [],
+      })
+      console.log(`✅ Ticket ${ticketId} acknowledged successfully`)
     } catch (error) {
       console.error('Error handling button interaction:', error)
       await interaction.reply({
         content: '❌ An error occurred. Please try again later.',
         ephemeral: true,
-      })
+      }).catch(() => {})
     }
   }
 })
@@ -174,42 +177,76 @@ async function checkDeliveryReminders() {
   console.log('🔍 Checking for tickets needing delivery reminders...')
 
   try {
-    // Fetch tickets needing reminders from API
-    const response = await fetch(`${API_URL}/api/bot/tickets-needing-reminders`, {
-      headers: {
-        'X-API-Key': API_KEY,
+    const now = new Date()
+    const sevenDaysFromNow = new Date(now)
+    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
+
+    // Find all sold tickets with event dates within 7 days that haven't been acknowledged
+    const tickets = await prisma.ticket.findMany({
+      where: {
+        status: 'Sold',
+        eventDate: {
+          gte: now,
+          lte: sevenDaysFromNow,
+        },
+        deliveryReminderAcknowledged: false,
+        OR: [
+          // Never sent a reminder
+          { deliveryReminderSent: false },
+          // Or last reminder was sent more than 24 hours ago
+          {
+            lastReminderSentAt: {
+              lte: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+            },
+          },
+        ],
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            discordId: true,
+          },
+        },
       },
     })
 
-    if (!response.ok) {
-      console.error(`❌ Failed to fetch tickets: ${response.status} ${response.statusText}`)
-      return
-    }
+    // Filter out tickets where user doesn't have Discord ID
+    const validTickets = tickets.filter((ticket) => ticket.user.discordId)
 
-    const { tickets } = await response.json()
-    console.log(`📊 Found ${tickets.length} ticket(s) needing reminders`)
+    console.log(`📊 Found ${validTickets.length} ticket(s) needing reminders`)
 
-    if (tickets.length === 0) {
+    if (validTickets.length === 0) {
       console.log('✅ No tickets need reminders right now')
       return
     }
 
     // Send reminders for each ticket
-    for (const ticket of tickets) {
-      const messageId = await sendDeliveryReminder(ticket)
+    for (const ticket of validTickets) {
+      const messageId = await sendDeliveryReminder({
+        id: ticket.id,
+        artist: ticket.artist,
+        location: ticket.location,
+        eventDate: ticket.eventDate,
+        section: ticket.section,
+        row: ticket.row,
+        seat: ticket.seat,
+        deliveryName: ticket.deliveryName,
+        deliveryEmail: ticket.deliveryEmail,
+        discordId: ticket.user.discordId,
+        userName: ticket.user.name,
+      })
 
       if (messageId) {
-        // Update ticket with reminder info via API
-        await fetch(`${API_URL}/api/bot/update-reminder-sent`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-API-Key': API_KEY,
+        // Update ticket with reminder info
+        await prisma.ticket.update({
+          where: { id: ticket.id },
+          data: {
+            deliveryReminderSent: true,
+            lastReminderSentAt: now,
+            discordMessageId: messageId,
           },
-          body: JSON.stringify({
-            ticketId: ticket.id,
-            messageId,
-          }),
         })
       }
 
@@ -217,7 +254,7 @@ async function checkDeliveryReminders() {
       await new Promise(resolve => setTimeout(resolve, 1000))
     }
 
-    console.log(`✅ Processed ${tickets.length} reminder(s)`)
+    console.log(`✅ Processed ${validTickets.length} reminder(s)`)
   } catch (error) {
     console.error('Error checking delivery reminders:', error)
   }
@@ -230,7 +267,7 @@ cron.schedule('0 9 * * *', () => {
 })
 
 // Also check immediately on startup (for testing)
-client.once('ready', () => {
+client.once('clientReady', () => {
   console.log('🚀 Running initial check...')
   checkDeliveryReminders()
 })
