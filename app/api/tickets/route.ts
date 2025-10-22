@@ -33,6 +33,7 @@ export async function POST(req: Request) {
   // Calculate profit in the buy currency
   const buyInPrice = parseFloat(data.buyInPrice) || 0
   const salePrice = parseFloat(data.salePrice) || 0
+  const quantity = parseInt(data.quantity) || 1
 
   // Import currency conversion
   const { convertCurrencySync } = await import("@/lib/currency")
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
     data: {
       ...data,
       userId: session.user.id,
+      quantity,
       buyInPrice,
       buyCurrency,
       salePrice,

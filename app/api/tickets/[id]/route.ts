@@ -30,6 +30,7 @@ export async function PATCH(
   // Calculate profit in the buy currency
   const buyInPrice = data.buyInPrice !== undefined ? parseFloat(data.buyInPrice) : existingTicket.buyInPrice || 0
   const salePrice = data.salePrice !== undefined ? parseFloat(data.salePrice) : existingTicket.salePrice || 0
+  const quantity = data.quantity !== undefined ? parseInt(data.quantity) : existingTicket.quantity || 1
 
   // Import currency conversion
   const { convertCurrencySync } = await import("@/lib/currency")
@@ -44,6 +45,7 @@ export async function PATCH(
     where: { id },
     data: {
       ...data,
+      quantity,
       buyInPrice,
       buyCurrency,
       salePrice,
