@@ -1,4 +1,5 @@
 import { AlertCircle, CheckCircle, XCircle, ExternalLink } from "lucide-react"
+import { redirect } from "next/navigation"
 
 async function getConfigStatus() {
   const checks = {
@@ -12,9 +13,19 @@ async function getConfigStatus() {
   return checks
 }
 
-export default async function SetupPage() {
+export default async function SetupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
   const checks = await getConfigStatus()
   const allConfigured = Object.values(checks).every(Boolean)
+  const params = await searchParams
+
+  // If everything is configured and no error, redirect to login
+  if (allConfigured && !params.error) {
+    redirect("/login")
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 py-12 px-4">
@@ -117,12 +128,19 @@ export default async function SetupPage() {
           )}
 
           {allConfigured ? (
-            <div className="text-center">
+            <div className="text-center space-y-4">
+              {params.error && (
+                <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+                  <p className="text-sm text-blue-700">
+                    All environment variables are properly configured! You can now proceed to login.
+                  </p>
+                </div>
+              )}
               <a
                 href="/login"
                 className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-3 px-8 rounded-lg hover:from-purple-700 hover:to-blue-700 transition shadow-md"
               >
-                Go to Login Page
+                Continue to Login
               </a>
             </div>
           ) : (
