@@ -1,13 +1,10 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { signOut } from "next-auth/react"
-import Link from "next/link"
 import {
   Plus,
   Search,
   Filter,
-  LogOut,
   Ticket,
   TrendingUp,
   DollarSign,
@@ -15,20 +12,15 @@ import {
   Edit,
   Trash2,
   X,
-  Moon,
-  Sun,
   Download,
-  Calendar,
 } from "lucide-react"
 import { format } from "date-fns"
 import TicketModal from "./TicketModal"
+import Navigation from "./Navigation"
 import {
-  CURRENCIES,
   convertCurrencySync,
-  getCurrencySymbol,
   formatCurrency,
 } from "@/lib/currency"
-import { useTheme } from "./ThemeProvider"
 
 interface Ticket {
   id: string
@@ -95,15 +87,29 @@ export default function DashboardClient({
     }
     return "USD"
   })
+  const [viewMode, setViewMode] = useState<"card" | "list">(() => {
+    // Load saved view mode from localStorage on mount
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("viewMode") as "card" | "list") || "list"
+    }
+    return "list"
+  })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
-  const { theme = "light", toggleTheme } = useTheme()
 
   // Save currency preference to localStorage whenever it changes
   const handleCurrencyChange = (newCurrency: string) => {
     setDisplayCurrency(newCurrency)
     if (typeof window !== "undefined") {
       localStorage.setItem("preferredCurrency", newCurrency)
+    }
+  }
+
+  // Save view mode preference to localStorage whenever it changes
+  const handleViewModeChange = (newMode: "card" | "list") => {
+    setViewMode(newMode)
+    if (typeof window !== "undefined") {
+      localStorage.setItem("viewMode", newMode)
     }
   }
 
@@ -291,73 +297,14 @@ export default function DashboardClient({
       {/* Animated Background Pattern */}
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] pointer-events-none"></div>
 
-      {/* Header */}
-      <header className="relative z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-indigo-100 dark:border-slate-700 animate-slideDown">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3 animate-slideUp">
-              <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-3 rounded-xl shadow-lg animate-float">
-                <Ticket className="h-6 w-6 text-white" />
-              </div>
-              <h1 className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-                Ticket Platform
-              </h1>
-            </div>
-            <div className="flex items-center space-x-3 animate-slideUp">
-              <Link
-                href="/events"
-                className="group flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105"
-                title="View Events Overview"
-              >
-                <Calendar className="h-4 w-4 transition-transform group-hover:scale-110" />
-                <span className="font-bold">Events</span>
-              </Link>
-              <button
-                onClick={toggleTheme}
-                className="group p-2.5 rounded-xl bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105"
-                title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5 text-amber-500 transition-transform group-hover:rotate-180 duration-500" />
-                ) : (
-                  <Moon className="h-5 w-5 text-indigo-600 transition-transform group-hover:-rotate-12 duration-300" />
-                )}
-              </button>
-              <select
-                value={displayCurrency}
-                onChange={(e) => handleCurrencyChange(e.target.value)}
-                className="px-4 py-2.5 border-2 border-indigo-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-800 shadow-sm hover:shadow-md hover:border-indigo-300 dark:hover:border-slate-500"
-                title="Display Currency"
-              >
-                {CURRENCIES.map((curr) => (
-                  <option key={curr.code} value={curr.code}>
-                    {curr.symbol} {curr.code}
-                  </option>
-                ))}
-              </select>
-              <div className="flex items-center space-x-3 bg-white dark:bg-slate-800 px-4 py-2.5 rounded-xl shadow-sm border border-indigo-100 dark:border-slate-600 hover:shadow-md transition-shadow">
-                {user.image && (
-                  <img
-                    src={user.image}
-                    alt={user.name || "User"}
-                    className="h-9 w-9 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
-                  />
-                )}
-                <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                  {user.name}
-                </span>
-              </div>
-              <button
-                onClick={() => signOut({ callbackUrl: "/login" })}
-                className="group flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl hover:from-red-600 hover:to-pink-700 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105"
-              >
-                <LogOut className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                <span className="font-bold">Logout</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation
+        user={user}
+        displayCurrency={displayCurrency}
+        onCurrencyChange={handleCurrencyChange}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
+      />
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
@@ -501,41 +448,43 @@ export default function DashboardClient({
           </div>
         </div>
 
-        {/* Tickets Table */}
-        <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-indigo-100 dark:border-slate-700 overflow-hidden animate-fadeIn">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gradient-to-r from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Event
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Seat Info
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Platform
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Buy Price
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Sale Price
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Profit
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
+        {/* Tickets View */}
+        {viewMode === "list" ? (
+          /* List View - Compact Table */
+          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-indigo-100 dark:border-slate-700 overflow-hidden animate-fadeIn">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700">
+                  <tr>
+                    <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Event
+                    </th>
+                    <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Seat Info
+                    </th>
+                    <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Platform
+                    </th>
+                    <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Buy Price
+                    </th>
+                    <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Sale Price
+                    </th>
+                    <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Profit
+                    </th>
+                    <th className="px-4 py-2.5 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-4 py-2.5 text-right text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-100 dark:divide-slate-700">
                 {filteredTickets.length === 0 ? (
                   <tr>
@@ -557,7 +506,7 @@ export default function DashboardClient({
                       key={ticket.id}
                       className="hover:bg-indigo-50/50 dark:hover:bg-slate-700/50 transition-colors duration-150"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-2">
                         <div>
                           <div className="text-sm font-black text-slate-800 dark:text-slate-200">
                             {ticket.artist || "N/A"}
@@ -567,14 +516,14 @@ export default function DashboardClient({
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-2 whitespace-nowrap">
                         <div className="text-sm font-bold text-slate-700 dark:text-slate-300">
                           {ticket.eventDate
                             ? format(new Date(ticket.eventDate), "MMM d, yyyy")
                             : "N/A"}
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-2">
                         <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                           {ticket.section && `Sec ${ticket.section}`}
                           {ticket.row && `, Row ${ticket.row}`}
@@ -582,12 +531,12 @@ export default function DashboardClient({
                           {!ticket.section && !ticket.row && !ticket.seat && "N/A"}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-2 whitespace-nowrap">
                         <span className="px-3 py-1.5 inline-flex text-xs leading-5 font-black rounded-lg bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/50 dark:to-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700">
                           {ticket.platform || "N/A"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-black text-slate-800 dark:text-slate-200">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm font-black text-slate-800 dark:text-slate-200">
                         {formatCurrency(
                           convertCurrencySync(
                             ticket.buyInPrice || 0,
@@ -597,7 +546,7 @@ export default function DashboardClient({
                           displayCurrency
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-black text-slate-800 dark:text-slate-200">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm font-black text-slate-800 dark:text-slate-200">
                         {formatCurrency(
                           convertCurrencySync(
                             ticket.salePrice || 0,
@@ -607,7 +556,7 @@ export default function DashboardClient({
                           displayCurrency
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-2 whitespace-nowrap">
                         <span
                           className={`text-sm font-black ${
                             (ticket.profit || 0) >= 0
@@ -625,7 +574,7 @@ export default function DashboardClient({
                           )}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-2 whitespace-nowrap">
                         <span
                           className={`px-3 py-1.5 inline-flex text-xs leading-5 font-black rounded-lg border ${
                             ticket.status === "Sold"
@@ -640,7 +589,7 @@ export default function DashboardClient({
                           {ticket.status || "N/A"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <td className="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">
                         <button
                           onClick={() => handleEditTicket(ticket)}
                           className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 p-2 rounded-lg transition-all mr-2"
@@ -661,6 +610,179 @@ export default function DashboardClient({
             </table>
           </div>
         </div>
+        ) : (
+          /* Card View */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
+            {filteredTickets.length === 0 ? (
+              <div className="col-span-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-12 text-center border border-slate-200 dark:border-slate-700">
+                <div className="bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 p-6 rounded-2xl mb-4 inline-block">
+                  <Ticket className="h-16 w-16 text-indigo-400 dark:text-indigo-500" />
+                </div>
+                <p className="text-xl font-black text-slate-700 dark:text-slate-300">No tickets found</p>
+                <p className="text-sm mt-2 text-slate-500 dark:text-slate-400">
+                  Add your first ticket to get started tracking your sales
+                </p>
+              </div>
+            ) : (
+              filteredTickets.map((ticket) => (
+                <div
+                  key={ticket.id}
+                  className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-indigo-100 dark:border-slate-700 hover:shadow-2xl transition-all duration-300 overflow-hidden group"
+                >
+                  {/* Card Header */}
+                  <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-4 border-b border-indigo-100 dark:border-slate-700">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-black text-slate-900 dark:text-white truncate">
+                          {ticket.artist || "N/A"}
+                        </h3>
+                        <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 truncate">
+                          {ticket.location || "N/A"}
+                        </p>
+                      </div>
+                      <span
+                        className={`px-3 py-1 rounded-lg text-xs font-black ${
+                          ticket.status === "Sold"
+                            ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"
+                            : ticket.status === "Listed"
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                            : "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300"
+                        }`}
+                      >
+                        {ticket.status || "N/A"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card Body */}
+                  <div className="p-4 space-y-3">
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                          Event Date
+                        </p>
+                        <p className="font-bold text-slate-900 dark:text-white">
+                          {ticket.eventDate
+                            ? format(new Date(ticket.eventDate), "MMM d, yyyy")
+                            : "N/A"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                          Platform
+                        </p>
+                        <p className="font-bold text-slate-900 dark:text-white truncate">
+                          {ticket.platform || "N/A"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 text-sm">
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                          Section
+                        </p>
+                        <p className="font-bold text-slate-900 dark:text-white">
+                          {ticket.section || "N/A"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                          Row
+                        </p>
+                        <p className="font-bold text-slate-900 dark:text-white">
+                          {ticket.row || "N/A"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                          Seat
+                        </p>
+                        <p className="font-bold text-slate-900 dark:text-white">
+                          {ticket.seat || "N/A"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
+                      <div className="grid grid-cols-3 gap-3 text-sm">
+                        <div>
+                          <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                            Buy Price
+                          </p>
+                          <p className="font-black text-slate-900 dark:text-white">
+                            {formatCurrency(
+                              convertCurrencySync(
+                                ticket.buyInPrice || 0,
+                                ticket.buyCurrency || "USD",
+                                displayCurrency
+                              ),
+                              displayCurrency
+                            )}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                            Sale Price
+                          </p>
+                          <p className="font-black text-slate-900 dark:text-white">
+                            {formatCurrency(
+                              convertCurrencySync(
+                                ticket.salePrice || 0,
+                                ticket.sellCurrency || "USD",
+                                displayCurrency
+                              ),
+                              displayCurrency
+                            )}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                            Profit
+                          </p>
+                          <p
+                            className={`font-black ${
+                              (ticket.profit || 0) >= 0
+                                ? "text-emerald-600 dark:text-emerald-400"
+                                : "text-rose-600 dark:text-rose-400"
+                            }`}
+                          >
+                            {formatCurrency(
+                              convertCurrencySync(
+                                ticket.profit || 0,
+                                ticket.profitCurrency || ticket.buyCurrency || "USD",
+                                displayCurrency
+                              ),
+                              displayCurrency
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Footer - Actions */}
+                  <div className="bg-slate-50 dark:bg-slate-900/50 p-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-end space-x-2">
+                    <button
+                      onClick={() => handleEditTicket(ticket)}
+                      className="flex items-center space-x-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 text-sm font-bold"
+                    >
+                      <Edit className="h-3.5 w-3.5" />
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTicket(ticket.id)}
+                      className="flex items-center space-x-1 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-all duration-200 text-sm font-bold"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </main>
 
       {/* Ticket Modal */}

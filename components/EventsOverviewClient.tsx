@@ -1,30 +1,21 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { signOut } from "next-auth/react"
-import Link from "next/link"
 import {
-  LogOut,
   Ticket,
-  Moon,
-  Sun,
   Calendar,
   MapPin,
   DollarSign,
   TrendingUp,
-  Users,
-  ArrowLeft,
   ChevronDown,
   ChevronUp,
 } from "lucide-react"
 import { format } from "date-fns"
+import Navigation from "./Navigation"
 import {
-  CURRENCIES,
   convertCurrencySync,
-  getCurrencySymbol,
   formatCurrency,
 } from "@/lib/currency"
-import { useTheme } from "./ThemeProvider"
 
 interface Ticket {
   id: string
@@ -86,7 +77,6 @@ export default function EventsOverviewClient({
     return "USD"
   })
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set())
-  const { theme = "light", toggleTheme } = useTheme()
 
   // Save currency preference to localStorage
   const handleCurrencyChange = (newCurrency: string) => {
@@ -194,71 +184,12 @@ export default function EventsOverviewClient({
       {/* Background Pattern */}
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] pointer-events-none"></div>
 
-      {/* Header */}
-      <header className="relative z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-indigo-100 dark:border-slate-700 animate-slideDown">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3 animate-slideUp">
-              <Link
-                href="/dashboard"
-                className="group p-2.5 rounded-xl bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105"
-              >
-                <ArrowLeft className="h-5 w-5 text-indigo-600 dark:text-indigo-400 transition-transform group-hover:-translate-x-1" />
-              </Link>
-              <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-3 rounded-xl shadow-lg animate-float">
-                <Calendar className="h-6 w-6 text-white" />
-              </div>
-              <h1 className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-                Events Overview
-              </h1>
-            </div>
-            <div className="flex items-center space-x-3 animate-slideUp">
-              <button
-                onClick={toggleTheme}
-                className="group p-2.5 rounded-xl bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105"
-                title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5 text-amber-500 transition-transform group-hover:rotate-180 duration-500" />
-                ) : (
-                  <Moon className="h-5 w-5 text-indigo-600 transition-transform group-hover:-rotate-12 duration-300" />
-                )}
-              </button>
-              <select
-                value={displayCurrency}
-                onChange={(e) => handleCurrencyChange(e.target.value)}
-                className="px-4 py-2.5 border-2 border-indigo-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-800 shadow-sm hover:shadow-md hover:border-indigo-300 dark:hover:border-slate-500"
-                title="Display Currency"
-              >
-                {CURRENCIES.map((curr) => (
-                  <option key={curr.code} value={curr.code}>
-                    {curr.symbol} {curr.code}
-                  </option>
-                ))}
-              </select>
-              <div className="flex items-center space-x-3 bg-white dark:bg-slate-800 px-4 py-2.5 rounded-xl shadow-sm border border-indigo-100 dark:border-slate-600 hover:shadow-md transition-shadow">
-                {user.image && (
-                  <img
-                    src={user.image}
-                    alt={user.name || "User"}
-                    className="h-9 w-9 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
-                  />
-                )}
-                <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                  {user.name}
-                </span>
-              </div>
-              <button
-                onClick={() => signOut({ callbackUrl: "/login" })}
-                className="group flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl hover:from-red-600 hover:to-pink-700 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105"
-              >
-                <LogOut className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                <span className="font-bold">Logout</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation
+        user={user}
+        displayCurrency={displayCurrency}
+        onCurrencyChange={handleCurrencyChange}
+      />
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Overall Stats */}
