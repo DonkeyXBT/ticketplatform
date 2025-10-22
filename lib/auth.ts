@@ -29,6 +29,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorization: {
         params: {
           scope: "identify email",
+          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/discord`,
         },
       },
     }),
