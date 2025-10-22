@@ -117,12 +117,22 @@ Make sure you added the production redirect in Discord:
 
 ---
 
-## Step 6: Test Your Production App
+## Step 6: Check Configuration Status
+
+After redeployment, check if everything is configured:
+
+1. Go to **https://ticketplatform.vercel.app/setup**
+2. You should see all items marked as "Configured" ✅
+3. If any items show "Missing" ❌, review your environment variables
+
+## Step 7: Test Your Production App
 
 1. Go to **https://ticketplatform.vercel.app**
 2. Click **"Sign in with Discord"**
 3. Authorize the app
 4. You should see your dashboard! 🎉
+
+💡 **Tip**: If you get redirected to the setup page, it means some environment variables aren't configured yet. The setup page will show you exactly which ones are missing!
 
 ---
 

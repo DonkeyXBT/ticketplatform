@@ -72,14 +72,19 @@ Open http://localhost:3000 and you're done! 🎉
 
 ## 🆘 Getting Errors?
 
+### Seeing a "Configuration Required" page?
+✅ **Good!** This means the app is working correctly. Just follow the setup instructions on that page.
+
 ### "500 Server Error" when logging in?
-→ Check **[CHECKLIST.md](CHECKLIST.md)** - Your .env file needs real values
+→ Visit **https://ticketplatform.vercel.app/setup** to see what's missing
+→ Or check **[CHECKLIST.md](CHECKLIST.md)** - Your .env file needs real values
 
 ### "Invalid Redirect URI" error?
 → Check **[DISCORD_SETUP.md](DISCORD_SETUP.md)** - Discord redirects must be exact
 
 ### Production site not working?
-→ Check **[VERCEL_SETUP.md](VERCEL_SETUP.md)** - Add environment variables in Vercel
+→ Visit **https://ticketplatform.vercel.app/setup** for a live status check
+→ Or check **[VERCEL_SETUP.md](VERCEL_SETUP.md)** - Add environment variables in Vercel
 
 ### Database connection error?
 → Check **[NEON_DATABASE_SETUP.md](NEON_DATABASE_SETUP.md)** - Verify your connection string
