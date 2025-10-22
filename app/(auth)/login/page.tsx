@@ -1,5 +1,5 @@
-import { signIn } from "@/lib/auth"
 import { Ticket } from "lucide-react"
+import { signInWithDiscord } from "@/app/actions/auth"
 
 export default function LoginPage() {
   return (
@@ -18,10 +18,7 @@ export default function LoginPage() {
         </div>
 
         <form
-          action={async () => {
-            "use server"
-            await signIn("discord", { redirectTo: "/dashboard" })
-          }}
+          action={signInWithDiscord}
           className="space-y-4"
         >
           <button
