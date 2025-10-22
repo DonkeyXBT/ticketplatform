@@ -59,8 +59,10 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
     quantity: "1",
     email: "",
     orderNumber: "",
+    buyPricePerTicket: "",
     buyInPrice: "",
     buyCurrency: "USD",
+    salePricePerTicket: "",
     salePrice: "",
     sellCurrency: "USD",
     saleId: "",
@@ -75,6 +77,10 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
 
   useEffect(() => {
     if (ticket) {
+      const quantity = ticket.quantity || 1
+      const buyTotal = ticket.buyInPrice || 0
+      const saleTotal = ticket.salePrice || 0
+
       setFormData({
         purchaseDate: ticket.purchaseDate
           ? new Date(ticket.purchaseDate).toISOString().split("T")[0]
@@ -87,12 +93,14 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
         section: ticket.section || "",
         row: ticket.row || "",
         seat: ticket.seat || "",
-        quantity: ticket.quantity?.toString() || "1",
+        quantity: quantity.toString(),
         email: ticket.email || "",
         orderNumber: ticket.orderNumber || "",
-        buyInPrice: ticket.buyInPrice?.toString() || "",
+        buyPricePerTicket: quantity > 0 ? (buyTotal / quantity).toFixed(2) : "",
+        buyInPrice: buyTotal.toString(),
         buyCurrency: (ticket as any).buyCurrency || "USD",
-        salePrice: ticket.salePrice?.toString() || "",
+        salePricePerTicket: quantity > 0 ? (saleTotal / quantity).toFixed(2) : "",
+        salePrice: saleTotal.toString(),
         sellCurrency: (ticket as any).sellCurrency || "USD",
         saleId: ticket.saleId || "",
         platform: ticket.platform || "Ticketmaster",
@@ -103,6 +111,30 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
       })
     }
   }, [ticket])
+
+  // Auto-calculate total buy price from per-ticket price × quantity
+  useEffect(() => {
+    const perTicket = parseFloat(formData.buyPricePerTicket) || 0
+    const qty = parseInt(formData.quantity) || 1
+    const total = perTicket * qty
+
+    setFormData((prev) => ({
+      ...prev,
+      buyInPrice: total > 0 ? total.toFixed(2) : "",
+    }))
+  }, [formData.buyPricePerTicket, formData.quantity])
+
+  // Auto-calculate total sale price from per-ticket price × quantity
+  useEffect(() => {
+    const perTicket = parseFloat(formData.salePricePerTicket) || 0
+    const qty = parseInt(formData.quantity) || 1
+    const total = perTicket * qty
+
+    setFormData((prev) => ({
+      ...prev,
+      salePrice: total > 0 ? total.toFixed(2) : "",
+    }))
+  }, [formData.salePricePerTicket, formData.quantity])
 
   useEffect(() => {
     const buyIn = parseFloat(formData.buyInPrice) || 0
@@ -351,7 +383,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
 
             <div>
               <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                Buy-in Price
+                Price Per Ticket
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 dark:text-slate-400 font-bold">
@@ -359,14 +391,20 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 </span>
                 <input
                   type="number"
-                  name="buyInPrice"
-                  value={formData.buyInPrice}
+                  name="buyPricePerTicket"
+                  value={formData.buyPricePerTicket}
                   onChange={handleChange}
                   step="0.01"
                   className="w-full pl-10 pr-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                   placeholder="0.00"
                 />
               </div>
+              {formData.buyPricePerTicket && (
+                <p className="mt-2 text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                  Total: {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}
+                  {formData.buyInPrice} {formData.buyCurrency} ({formData.quantity} × {CURRENCIES.find((c) => c.code === formData.buyCurrency)?.symbol}{formData.buyPricePerTicket})
+                </p>
+              )}
             </div>
 
             {/* Sale Information */}
@@ -415,7 +453,7 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
 
             <div>
               <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                Sale Price
+                Sale Price Per Ticket
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 dark:text-slate-400 font-bold">
@@ -423,14 +461,20 @@ export default function TicketModal({ ticket, onClose, onSave }: TicketModalProp
                 </span>
                 <input
                   type="number"
-                  name="salePrice"
-                  value={formData.salePrice}
+                  name="salePricePerTicket"
+                  value={formData.salePricePerTicket}
                   onChange={handleChange}
                   step="0.01"
                   className="w-full pl-10 pr-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700 placeholder-slate-400 dark:placeholder-slate-500"
                   placeholder="0.00"
                 />
               </div>
+              {formData.salePricePerTicket && (
+                <p className="mt-2 text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                  Total: {CURRENCIES.find((c) => c.code === formData.sellCurrency)?.symbol}
+                  {formData.salePrice} {formData.sellCurrency} ({formData.quantity} × {CURRENCIES.find((c) => c.code === formData.sellCurrency)?.symbol}{formData.salePricePerTicket})
+                </p>
+              )}
             </div>
 
             <div>
