@@ -89,7 +89,7 @@ export default function DashboardClient({
   const [displayCurrency, setDisplayCurrency] = useState("USD")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
-  const { theme, toggleTheme } = useTheme()
+  const { theme = "light", toggleTheme } = useTheme()
 
   // Calculate statistics with currency conversion
   const stats = useMemo(() => {
