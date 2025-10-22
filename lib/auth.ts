@@ -40,32 +40,69 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       try {
+        console.log("🔐 [AUTH] Sign in callback triggered")
+        console.log("📧 [AUTH] User email:", user.email)
+        console.log("🔑 [AUTH] Provider:", account?.provider)
+
         // Check if required environment variables are set
         if (!discordClientId || !discordClientSecret || discordClientId === "placeholder") {
-          console.error("❌ Discord OAuth credentials not properly configured")
+          console.error("❌ [AUTH] Status: 401 - Discord OAuth credentials not properly configured")
           return false
         }
 
         if (!databaseUrl || databaseUrl.includes("user:password@host")) {
-          console.error("❌ Database URL not properly configured")
+          console.error("❌ [AUTH] Status: 500 - Database URL not properly configured")
           return false
         }
 
-        console.log("✅ Sign in successful for user:", user.email)
+        console.log("✅ [AUTH] Status: 200 - Sign in successful for user:", user.email)
+        console.log("🎯 [AUTH] Redirecting to dashboard...")
         return true
       } catch (error) {
-        console.error("❌ Sign in error:", error)
+        console.error("❌ [AUTH] Status: 500 - Sign in error:", error)
         return false
       }
     },
+    async redirect({ url, baseUrl }) {
+      console.log("🔀 [REDIRECT] Called with url:", url)
+      console.log("🔀 [REDIRECT] Base URL:", baseUrl)
+
+      // If the url is trying to go to setup or error page after successful auth, redirect to dashboard
+      if (url.includes("/setup") || url.includes("/api/auth/error")) {
+        console.log("🎯 [REDIRECT] Overriding to dashboard")
+        return `${baseUrl}/dashboard`
+      }
+
+      // If redirecting after sign in, go to dashboard
+      if (url.includes("/api/auth/callback")) {
+        console.log("🎯 [REDIRECT] Post-callback, going to dashboard")
+        return `${baseUrl}/dashboard`
+      }
+
+      // If url starts with baseUrl, use it
+      if (url.startsWith(baseUrl)) {
+        console.log("✅ [REDIRECT] Using provided URL:", url)
+        return url
+      }
+
+      // If url starts with /, prepend baseUrl
+      if (url.startsWith("/")) {
+        console.log("✅ [REDIRECT] Relative path, using:", `${baseUrl}${url}`)
+        return `${baseUrl}${url}`
+      }
+
+      // Default to dashboard
+      console.log("🎯 [REDIRECT] Default to dashboard")
+      return `${baseUrl}/dashboard`
+    },
     session({ session, user }) {
+      console.log("🔄 [SESSION] Session callback for user:", user.email)
       session.user.id = user.id
       return session
     },
   },
   pages: {
     signIn: "/login",
-    error: "/setup",
   },
   debug: process.env.NODE_ENV === "development",
 })
