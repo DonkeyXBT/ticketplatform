@@ -23,9 +23,19 @@ export async function getAuthFromRequest(request: Request) {
   const authHeader = request.headers.get("Authorization")
 
   if (!authHeader?.startsWith("Bearer ")) {
+    console.log("⚠️ No Bearer token in Authorization header")
     return null
   }
 
   const token = authHeader.substring(7)
-  return await verifyJWT(token)
+  console.log(`🔐 JWT Token received: ${token.substring(0, 20)}...`)
+
+  const result = await verifyJWT(token)
+  if (result) {
+    console.log(`✅ JWT verified for user: ${result.userId}`)
+  } else {
+    console.log(`❌ JWT verification failed`)
+  }
+
+  return result
 }

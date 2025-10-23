@@ -1,6 +1,22 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { getAuthFromRequest } from "@/lib/jwt"
+import { toSnakeCase } from "@/lib/transform"
+
+async function getUserId(request?: Request): Promise<string | null> {
+  // Try JWT auth first (for mobile)
+  if (request) {
+    const jwtUser = await getAuthFromRequest(request)
+    if (jwtUser?.userId) {
+      return jwtUser.userId
+    }
+  }
+
+  // Fall back to session auth (for web)
+  const session = await auth()
+  return session?.user?.id || null
+}
 
 // PATCH /api/sales/[id] - Update a sale
 export async function PATCH(
@@ -8,8 +24,9 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: saleId } = await params
-  const session = await auth()
-  if (!session?.user) {
+  const userId = await getUserId(req)
+
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
@@ -32,7 +49,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Sale not found" }, { status: 404 })
     }
 
-    if (sale.ticket.userId !== session.user.id) {
+    if (sale.ticket.userId !== userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
@@ -102,7 +119,9 @@ export async function PATCH(
       data: { status },
     })
 
-    return NextResponse.json(updatedSale)
+    // Convert to snake_case for iOS app
+    const saleSnakeCase = toSnakeCase(updatedSale)
+    return NextResponse.json(saleSnakeCase)
   } catch (error) {
     console.error("Error updating sale:", error)
     return NextResponse.json(
@@ -118,8 +137,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: saleId } = await params
-  const session = await auth()
-  if (!session?.user) {
+  const userId = await getUserId(req)
+
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
@@ -141,7 +161,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Sale not found" }, { status: 404 })
     }
 
-    if (sale.ticket.userId !== session.user.id) {
+    if (sale.ticket.userId !== userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 

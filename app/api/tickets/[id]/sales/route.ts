@@ -1,6 +1,22 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { getAuthFromRequest } from "@/lib/jwt"
+import { toSnakeCase } from "@/lib/transform"
+
+async function getUserId(request?: Request): Promise<string | null> {
+  // Try JWT auth first (for mobile)
+  if (request) {
+    const jwtUser = await getAuthFromRequest(request)
+    if (jwtUser?.userId) {
+      return jwtUser.userId
+    }
+  }
+
+  // Fall back to session auth (for web)
+  const session = await auth()
+  return session?.user?.id || null
+}
 
 // GET /api/tickets/[id]/sales - Get all sales for a ticket
 export async function GET(
@@ -8,8 +24,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: ticketId } = await params
-  const session = await auth()
-  if (!session?.user) {
+  const userId = await getUserId(req)
+
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
@@ -25,7 +42,7 @@ export async function GET(
       return NextResponse.json({ error: "Ticket not found" }, { status: 404 })
     }
 
-    if (ticket.userId !== session.user.id) {
+    if (ticket.userId !== userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
@@ -35,7 +52,10 @@ export async function GET(
       orderBy: { createdAt: "desc" },
     })
 
-    return NextResponse.json(sales)
+    // Convert to snake_case for iOS app
+    const salesSnakeCase = toSnakeCase(sales)
+
+    return NextResponse.json(salesSnakeCase)
   } catch (error) {
     console.error("Error fetching sales:", error)
     return NextResponse.json(
@@ -51,8 +71,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: ticketId } = await params
-  const session = await auth()
-  if (!session?.user) {
+  const userId = await getUserId(req)
+
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
@@ -71,7 +92,7 @@ export async function POST(
       return NextResponse.json({ error: "Ticket not found" }, { status: 404 })
     }
 
-    if (ticket.userId !== session.user.id) {
+    if (ticket.userId !== userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
@@ -133,7 +154,10 @@ export async function POST(
       })
     }
 
-    return NextResponse.json(sale)
+    // Convert to snake_case for iOS app
+    const saleSnakeCase = toSnakeCase(sale)
+
+    return NextResponse.json(saleSnakeCase)
   } catch (error) {
     console.error("Error creating sale:", error)
     return NextResponse.json(

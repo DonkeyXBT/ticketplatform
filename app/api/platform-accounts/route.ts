@@ -2,18 +2,34 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { encrypt, decrypt } from "@/lib/encryption"
 import { NextResponse } from "next/server"
+import { getAuthFromRequest } from "@/lib/jwt"
+import { toSnakeCase } from "@/lib/transform"
 
-export async function GET() {
+async function getUserId(request?: Request): Promise<string | null> {
+  // Try JWT auth first (for mobile)
+  if (request) {
+    const jwtUser = await getAuthFromRequest(request)
+    if (jwtUser?.userId) {
+      return jwtUser.userId
+    }
+  }
+
+  // Fall back to session auth (for web)
   const session = await auth()
+  return session?.user?.id || null
+}
 
-  if (!session?.user) {
+export async function GET(request: Request) {
+  const userId = await getUserId(request)
+
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   try {
     const accounts = await prisma.platformAccount.findMany({
       where: {
-        userId: session.user.id,
+        userId: userId,
       },
       orderBy: [
         { platform: "asc" },
@@ -27,14 +43,17 @@ export async function GET() {
       platform: account.platform,
       email: account.email,
       password: decrypt(account.encryptedPassword),
-      twoFA: account.encryptedTwoFA ? decrypt(account.encryptedTwoFA) : null,
-      telephoneNumber: account.telephoneNumber,
+      twoFactorSecret: account.encryptedTwoFA ? decrypt(account.encryptedTwoFA) : null,
+      phoneNumber: account.telephoneNumber,
       notes: account.notes,
       createdAt: account.createdAt,
       updatedAt: account.updatedAt,
     }))
 
-    return NextResponse.json(decryptedAccounts)
+    // Convert to snake_case for iOS app
+    const accountsSnakeCase = toSnakeCase(decryptedAccounts)
+
+    return NextResponse.json(accountsSnakeCase)
   } catch (error) {
     console.error("Error fetching platform accounts:", error)
     return NextResponse.json(
@@ -45,9 +64,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await auth()
+  const userId = await getUserId(req)
 
-  if (!session?.user) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
@@ -56,32 +75,37 @@ export async function POST(req: Request) {
 
     // Encrypt sensitive data
     const encryptedPassword = encrypt(data.password)
-    const encryptedTwoFA = data.twoFA ? encrypt(data.twoFA) : null
+    const encryptedTwoFA = data.twoFactorSecret ? encrypt(data.twoFactorSecret) : null
 
     const account = await prisma.platformAccount.create({
       data: {
-        userId: session.user.id,
+        userId: userId,
         platform: data.platform,
         email: data.email,
         encryptedPassword,
         encryptedTwoFA,
-        telephoneNumber: data.telephoneNumber || null,
+        telephoneNumber: data.phoneNumber || null,
         notes: data.notes || null,
       },
     })
 
     // Return decrypted version to client
-    return NextResponse.json({
+    const response = {
       id: account.id,
       platform: account.platform,
       email: account.email,
       password: data.password,
-      twoFA: data.twoFA || null,
-      telephoneNumber: account.telephoneNumber,
+      twoFactorSecret: data.twoFactorSecret || null,
+      phoneNumber: account.telephoneNumber,
       notes: account.notes,
       createdAt: account.createdAt,
       updatedAt: account.updatedAt,
-    })
+    }
+
+    // Convert to snake_case for iOS app
+    const responseSnakeCase = toSnakeCase(response)
+
+    return NextResponse.json(responseSnakeCase)
   } catch (error) {
     console.error("Error creating platform account:", error)
     return NextResponse.json(
