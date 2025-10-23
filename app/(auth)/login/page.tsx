@@ -4,16 +4,16 @@ import { Ticket } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { signIn } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 
-export default function LoginPage() {
+function LoginContent() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isGeneratingToken, setIsGeneratingToken] = useState(false)
 
   // Check if this is a mobile login request
-  const isMobile = searchParams.get("mobile") === "true"
+  const isMobile = searchParams?.get("mobile") === "true"
 
   useEffect(() => {
     async function handleAuthentication() {
@@ -160,5 +160,19 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-amber-500"></div>
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   )
 }

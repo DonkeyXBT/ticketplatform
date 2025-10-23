@@ -23,9 +23,9 @@ export default async function AppLoginPage() {
 
       const userObject = {
         id: session.user.id,
-        email: session.user.email,
-        name: session.user.name,
-        image: session.user.image,
+        email: session.user.email ?? null,
+        name: session.user.name ?? null,
+        image: session.user.image ?? null,
       }
 
       // Return client component that will redirect to app
