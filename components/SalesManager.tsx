@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus, Edit, Trash2, X, DollarSign, Users, Package } from "lucide-react"
+import { Plus, Edit, Trash2, X, DollarSign, Users, Package, Send, CheckCircle } from "lucide-react"
 import { CURRENCIES, convertCurrencySync } from "@/lib/currency"
 
 interface Sale {
@@ -15,6 +15,7 @@ interface Sale {
   siteSold: string | null
   deliveryEmail: string | null
   deliveryName: string | null
+  ticketsSent: boolean
   createdAt: Date
 }
 
@@ -181,6 +182,24 @@ export default function SalesManager({ ticket, onClose }: SalesManagerProps) {
     } catch (error) {
       console.error("Error deleting sale:", error)
       alert("Failed to delete sale")
+    }
+  }
+
+  const handleToggleTicketsSent = async (saleId: string) => {
+    try {
+      const res = await fetch(`/api/sales/${saleId}/toggle-sent`, {
+        method: "POST",
+      })
+
+      if (res.ok) {
+        await fetchSales()
+      } else {
+        const error = await res.json()
+        alert(error.error || "Failed to update status")
+      }
+    } catch (error) {
+      console.error("Error toggling tickets sent:", error)
+      alert("Failed to update status")
     }
   }
 
@@ -514,6 +533,25 @@ export default function SalesManager({ ticket, onClose }: SalesManagerProps) {
                               {sale.profit.toFixed(2)}
                             </span>
                           )}
+                          <span
+                            className={`px-3 py-1 rounded-lg font-bold text-sm flex items-center gap-1.5 ${
+                              sale.ticketsSent
+                                ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                                : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
+                            }`}
+                          >
+                            {sale.ticketsSent ? (
+                              <>
+                                <CheckCircle className="h-4 w-4" />
+                                Sent
+                              </>
+                            ) : (
+                              <>
+                                <Send className="h-4 w-4" />
+                                Not Sent
+                              </>
+                            )}
+                          </span>
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           {sale.siteSold && (
@@ -559,6 +597,21 @@ export default function SalesManager({ ticket, onClose }: SalesManagerProps) {
                         </div>
                       </div>
                       <div className="flex gap-2">
+                        <button
+                          onClick={() => handleToggleTicketsSent(sale.id)}
+                          className={`p-2 rounded-lg transition-all ${
+                            sale.ticketsSent
+                              ? "text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30"
+                              : "text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30"
+                          }`}
+                          title={sale.ticketsSent ? "Mark as not sent" : "Mark as sent"}
+                        >
+                          {sale.ticketsSent ? (
+                            <CheckCircle className="h-5 w-5" />
+                          ) : (
+                            <Send className="h-5 w-5" />
+                          )}
+                        </button>
                         <button
                           onClick={() => startEdit(sale)}
                           className="p-2 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-all"

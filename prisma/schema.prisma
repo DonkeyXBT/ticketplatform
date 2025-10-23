@@ -117,6 +117,7 @@ model Sale {
   siteSold                     String?
   deliveryEmail                String?
   deliveryName                 String?
+  ticketsSent                  Boolean   @default(false)
   deliveryReminderSent         Boolean   @default(false)
   deliveryReminderAcknowledged Boolean   @default(false)
   lastReminderSentAt           DateTime?
@@ -129,6 +130,7 @@ model Sale {
   @@index([ticketId])
   @@index([siteSold])
   @@index([deliveryReminderSent])
+  @@index([ticketsSent])
 }
 
 model PlatformAccount {

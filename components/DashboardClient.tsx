@@ -31,6 +31,7 @@ interface Sale {
   sellCurrency: string | null
   profit: number | null
   profitCurrency: string | null
+  ticketsSent: boolean
   createdAt: Date
 }
 
