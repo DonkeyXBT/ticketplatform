@@ -35,12 +35,58 @@ The app matches the web platform's design with:
 
 ---
 
+## 🚀 Quick Start
+
+**Want to get started fast?**
+
+### Option 1: Super Quick (5 minutes)
+Follow **[QUICK_START.md](./QUICK_START.md)** for a streamlined setup guide.
+
+### Option 2: Detailed Guide (Complete walkthrough)
+Follow **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** for step-by-step instructions with explanations.
+
+---
+
 ## Requirements
 
 - **iOS 16.0+**
 - **Xcode 15.0+**
 - **Swift 5.9+**
 - **Backend API running** (from main project)
+
+---
+
+## How It Works
+
+The iOS app is a **client** that connects to your **existing backend**:
+
+```
+┌──────────────────────────────────────────────────┐
+│              iOS App (SwiftUI)                   │
+│  • Dashboard  • Accounts  • Sales  • Events      │
+└───────────────────────┬──────────────────────────┘
+                        │
+                    HTTP/HTTPS Requests
+                        │
+┌───────────────────────▼──────────────────────────┐
+│         Next.js Backend (localhost:3000)         │
+│    Same API as web app - all endpoints work     │
+└───────────────────────┬──────────────────────────┘
+                        │
+                   Prisma ORM
+                        │
+┌───────────────────────▼──────────────────────────┐
+│      PostgreSQL Database (Neon)                  │
+│   Same database - all data shared with web app  │
+└──────────────────────────────────────────────────┘
+```
+
+**Key Points:**
+- ✅ Uses your **existing Next.js backend** - no new server needed
+- ✅ Uses your **existing PostgreSQL database** - no new database needed
+- ✅ Uses your **existing API endpoints** - no new APIs needed
+- ✅ Same authentication (Discord OAuth)
+- ✅ Same data for web app and iOS app
 
 ---
 
@@ -75,65 +121,32 @@ ios-app/TicketPlatform/
 
 ---
 
-## Setup Instructions
+## 📖 Setup Guides
 
-### 1. Backend API
+We have two setup guides to help you get started:
 
-The iOS app connects to the same backend as the web app. Make sure your backend is running:
+### 🏃‍♂️ [QUICK_START.md](./QUICK_START.md)
+**5-minute setup** - Get the app running fast with minimal explanation.
 
-```bash
-# From main project directory
-cd ticketplatform
-npm run dev
-```
+Perfect if you:
+- Know Xcode basics
+- Just want to see it working
+- Can troubleshoot yourself
 
-The app will connect to `http://localhost:3000` by default in development.
+### 📚 [SETUP_GUIDE.md](./SETUP_GUIDE.md)
+**Complete walkthrough** - Step-by-step with detailed explanations.
 
-### 2. Open in Xcode
+Perfect if you:
+- New to iOS development
+- Want to understand how it works
+- Need troubleshooting help
 
-```bash
-cd ios-app/TicketPlatform
-open TicketPlatform.xcodeproj  # (after creating Xcode project)
-```
-
-### 3. Configure API Endpoint
-
-To change the API endpoint, set the environment variable:
-
-```swift
-// In Xcode: Edit Scheme → Run → Arguments → Environment Variables
-API_BASE_URL = http://localhost:3000
-```
-
-For production, update to your deployed backend URL.
-
-### 4. Build and Run
-
-1. Select a simulator or device
-2. Press **Cmd+R** to build and run
-3. Sign in with your Discord account
-
----
-
-## Creating the Xcode Project
-
-Since this is a complete SwiftUI codebase, you'll need to create an Xcode project:
-
-### Option 1: Create New Xcode Project
-
-1. Open Xcode
-2. **File → New → Project**
-3. Choose **iOS → App**
-4. Project settings:
-   - **Product Name:** TicketPlatform
-   - **Interface:** SwiftUI
-   - **Language:** Swift
-   - **Bundle Identifier:** com.ticketplatform.app
-5. Copy all `.swift` files into the project, maintaining folder structure
-
-### Option 2: Use Swift Package Manager
-
-The code is organized to be easily integrated into a SwiftPM project.
+**Both guides cover:**
+- Creating Xcode project
+- Adding Swift files
+- Connecting to your backend
+- Testing the app
+- Deploying to production
 
 ---
 
