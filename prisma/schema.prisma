@@ -24,6 +24,7 @@ model User {
   accounts         Account[]
   sessions         Session[]
   tickets          Ticket[]
+  platformAccounts PlatformAccount[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 }
@@ -101,4 +102,22 @@ model Ticket {
   @@index([platform])
   @@index([status])
   @@index([eventDate])
+}
+
+model PlatformAccount {
+  id                String   @id @default(cuid())
+  userId            String
+  platform          String
+  email             String
+  encryptedPassword String
+  encryptedTwoFA    String?
+  telephoneNumber   String?
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([platform])
 }

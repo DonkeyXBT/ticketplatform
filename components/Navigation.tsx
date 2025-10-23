@@ -11,6 +11,7 @@ import {
   LogOut,
   LayoutGrid,
   List,
+  Shield,
 } from "lucide-react"
 import { CURRENCIES } from "@/lib/currency"
 import { useTheme } from "./ThemeProvider"
@@ -78,6 +79,17 @@ export default function Navigation({
               >
                 <Calendar className="h-4 w-4" />
                 <span>Events</span>
+              </Link>
+              <Link
+                href="/accounts"
+                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
+                  pathname === "/accounts"
+                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                    : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                }`}
+              >
+                <Shield className="h-4 w-4" />
+                <span>Accounts</span>
               </Link>
             </nav>
           </div>
@@ -187,6 +199,17 @@ export default function Navigation({
           >
             <Calendar className="h-4 w-4" />
             <span>Events</span>
+          </Link>
+          <Link
+            href="/accounts"
+            className={`flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
+              pathname === "/accounts"
+                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-600"
+            }`}
+          >
+            <Shield className="h-4 w-4" />
+            <span>Accounts</span>
           </Link>
         </nav>
       </div>
