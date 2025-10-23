@@ -106,6 +106,23 @@ See **[docs/SETUP.md](./docs/SETUP.md)** for complete installation and configura
 **Quick Links:**
 - **[Setup Guide](./docs/SETUP.md)** - Complete installation instructions
 - **[Discord OAuth Setup](./docs/DISCORD_SETUP.md)** - Detailed OAuth configuration
+- **[iOS App](./ios-app/README.md)** - Native iOS application
+
+---
+
+## 📱 iOS App
+
+A complete native iOS application built with SwiftUI is included in this repository!
+
+**Features:**
+- Full feature parity with web app
+- Beautiful native SwiftUI design
+- Secure Keychain integration
+- Live 2FA code generator
+- Dark mode support
+- Smooth animations
+
+**[View iOS App Documentation →](./ios-app/README.md)**
 
 ---
 
@@ -113,10 +130,15 @@ See **[docs/SETUP.md](./docs/SETUP.md)** for complete installation and configura
 
 We're constantly improving the platform. Here's what's coming:
 
+### Recently Added ✅
+- **Native iOS App** - Complete SwiftUI application with all features
+- **Multi-Buyer Sales** - Sell tickets to multiple buyers per order
+- **Platform Accounts** - Encrypted credential storage with 2FA codes
+
 ### Phase 1: Core Enhancements (Q1 2025)
 - **Profit Analytics Dashboard** - Visual charts, ROI tracking, best-performing events
 - **Bulk Operations** - CSV import/export, batch updates
-- **Mobile PWA** - Native app experience on mobile devices
+- **iOS App Enhancements** - Widgets, push notifications, Apple Watch support
 
 ### Phase 2: Automation (Q2 2025)
 - **Automated Price Monitoring** - Track market prices, get alerts for profitable opportunities
