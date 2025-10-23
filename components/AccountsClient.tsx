@@ -13,6 +13,9 @@ import {
   Check,
   Key,
   Shield,
+  LayoutGrid,
+  List,
+  Maximize2,
 } from "lucide-react"
 import Navigation from "./Navigation"
 import QRCode from "qrcode"
@@ -60,6 +63,13 @@ export default function AccountsClient({ user }: { user: User }) {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null)
   const [bulkText, setBulkText] = useState("")
   const [displayCurrency, setDisplayCurrency] = useState("USD")
+  const [viewMode, setViewMode] = useState<"list" | "card" | "detailed">(() => {
+    // Load saved view mode from localStorage on mount
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("accountsViewMode") as "list" | "card" | "detailed") || "card"
+    }
+    return "card"
+  })
 
   const [formData, setFormData] = useState({
     platform: PLATFORMS[0],
@@ -238,6 +248,13 @@ export default function AccountsClient({ user }: { user: User }) {
     })
   }
 
+  const handleViewModeChange = (newMode: "list" | "card" | "detailed") => {
+    setViewMode(newMode)
+    if (typeof window !== "undefined") {
+      localStorage.setItem("accountsViewMode", newMode)
+    }
+  }
+
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text)
     setCopied(field)
@@ -252,6 +269,8 @@ export default function AccountsClient({ user }: { user: User }) {
         user={user}
         displayCurrency={displayCurrency}
         onCurrencyChange={setDisplayCurrency}
+        viewMode={viewMode as "card" | "list"}
+        onViewModeChange={(mode) => handleViewModeChange(mode === "card" ? "card" : "list")}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -266,21 +285,60 @@ export default function AccountsClient({ user }: { user: User }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="mb-6 flex gap-3">
-          <button
-            onClick={() => openModal()}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl font-bold hover:scale-105"
-          >
-            <Plus className="h-5 w-5" />
-            Add Account
-          </button>
-          <button
-            onClick={() => setIsBulkModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all duration-200 font-bold hover:scale-105"
-          >
-            <Upload className="h-5 w-5" />
-            Bulk Import
-          </button>
+        <div className="mb-6 flex flex-wrap gap-3 items-center justify-between">
+          <div className="flex gap-3">
+            <button
+              onClick={() => openModal()}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl font-bold hover:scale-105"
+            >
+              <Plus className="h-5 w-5" />
+              Add Account
+            </button>
+            <button
+              onClick={() => setIsBulkModalOpen(true)}
+              className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all duration-200 font-bold hover:scale-105"
+            >
+              <Upload className="h-5 w-5" />
+              Bulk Import
+            </button>
+          </div>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 rounded-xl p-1 shadow-sm">
+            <button
+              onClick={() => handleViewModeChange("list")}
+              className={`p-2.5 rounded-lg transition-all duration-300 ${
+                viewMode === "list"
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
+              }`}
+              title="List View"
+            >
+              <List className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => handleViewModeChange("card")}
+              className={`p-2.5 rounded-lg transition-all duration-300 ${
+                viewMode === "card"
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
+              }`}
+              title="Card View"
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => handleViewModeChange("detailed")}
+              className={`p-2.5 rounded-lg transition-all duration-300 ${
+                viewMode === "detailed"
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
+              }`}
+              title="Detailed View"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
         {/* Platform Tabs */}
@@ -306,25 +364,271 @@ export default function AccountsClient({ user }: { user: User }) {
         </div>
 
         {/* Accounts List */}
-        <div className="space-y-4">
-          {filteredAccounts.length === 0 ? (
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-12 text-center border-2 border-slate-200 dark:border-slate-700">
-              <Shield className="h-16 w-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-              <p className="text-xl font-bold text-slate-600 dark:text-slate-400 mb-2">
-                No accounts for {selectedPlatform}
-              </p>
-              <p className="text-slate-500 dark:text-slate-500 mb-6">
-                Add your first account to get started
-              </p>
-              <button
-                onClick={() => openModal()}
-                className="px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl font-bold hover:scale-105 transition-transform"
-              >
-                Add Account
-              </button>
+        {filteredAccounts.length === 0 ? (
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-12 text-center border-2 border-slate-200 dark:border-slate-700">
+            <Shield className="h-16 w-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+            <p className="text-xl font-bold text-slate-600 dark:text-slate-400 mb-2">
+              No accounts for {selectedPlatform}
+            </p>
+            <p className="text-slate-500 dark:text-slate-500 mb-6">
+              Add your first account to get started
+            </p>
+            <button
+              onClick={() => openModal()}
+              className="px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl font-bold hover:scale-105 transition-transform"
+            >
+              Add Account
+            </button>
+          </div>
+        ) : viewMode === "list" ? (
+          /* List View - Compact Table */
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border-2 border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Password
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      2FA
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Phone
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                  {filteredAccounts.map((account) => (
+                    <tr key={account.id} className="hover:bg-indigo-50 dark:hover:bg-slate-700/50 transition-colors">
+                      <td className="px-4 py-3">
+                        <span className="text-sm font-bold text-slate-900 dark:text-white">{account.email}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <code className="text-xs font-mono text-slate-700 dark:text-slate-300">
+                            {showPassword[account.id] ? account.password : "••••••••"}
+                          </code>
+                          <button
+                            onClick={() =>
+                              setShowPassword({
+                                ...showPassword,
+                                [account.id]: !showPassword[account.id],
+                              })
+                            }
+                            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-600 rounded transition-all"
+                          >
+                            {showPassword[account.id] ? (
+                              <EyeOff className="h-3 w-3" />
+                            ) : (
+                              <Eye className="h-3 w-3" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => copyToClipboard(account.password, `pwd-${account.id}`)}
+                            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-600 rounded transition-all"
+                          >
+                            {copied === `pwd-${account.id}` ? (
+                              <Check className="h-3 w-3 text-emerald-600" />
+                            ) : (
+                              <Copy className="h-3 w-3" />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        {account.twoFA ? (
+                          <div className="flex items-center gap-2">
+                            <code className="text-xs font-mono text-amber-900 dark:text-amber-200">
+                              {showTwoFA[account.id] ? account.twoFA : "••••••••"}
+                            </code>
+                            <button
+                              onClick={() =>
+                                setShowTwoFA({
+                                  ...showTwoFA,
+                                  [account.id]: !showTwoFA[account.id],
+                                })
+                              }
+                              className="p-1 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
+                            >
+                              {showTwoFA[account.id] ? (
+                                <EyeOff className="h-3 w-3" />
+                              ) : (
+                                <Eye className="h-3 w-3" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => copyToClipboard(account.twoFA!, `2fa-${account.id}`)}
+                              className="p-1 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
+                            >
+                              {copied === `2fa-${account.id}` ? (
+                                <Check className="h-3 w-3 text-emerald-600" />
+                              ) : (
+                                <Copy className="h-3 w-3" />
+                              )}
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="text-xs text-slate-600 dark:text-slate-400">
+                          {account.telephoneNumber || "—"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex gap-1 justify-end">
+                          <button
+                            onClick={() => openModal(account)}
+                            className="p-1.5 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded transition-all"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(account.id)}
+                            className="p-1.5 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded transition-all"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ) : (
-            filteredAccounts.map((account) => (
+          </div>
+        ) : viewMode === "detailed" ? (
+          /* Detailed View - Large Expanded Cards */
+          <div className="space-y-6">
+            {filteredAccounts.map((account) => (
+              <div
+                key={account.id}
+                className="bg-white dark:bg-slate-800 rounded-3xl p-8 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all shadow-lg hover:shadow-2xl"
+              >
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">
+                      {account.email}
+                    </h2>
+                    {account.telephoneNumber && (
+                      <p className="text-base text-slate-600 dark:text-slate-400 font-bold">
+                        📱 {account.telephoneNumber}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => openModal(account)}
+                      className="p-3 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all hover:scale-110"
+                    >
+                      <Edit className="h-6 w-6" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(account.id)}
+                      className="p-3 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all hover:scale-110"
+                    >
+                      <Trash2 className="h-6 w-6" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Password */}
+                  <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-700/50 p-5 rounded-2xl">
+                    <span className="text-base font-black text-slate-700 dark:text-slate-300 w-32">
+                      Password:
+                    </span>
+                    <code className="flex-1 text-base font-mono font-bold text-slate-900 dark:text-white">
+                      {showPassword[account.id] ? account.password : "••••••••••••"}
+                    </code>
+                    <button
+                      onClick={() =>
+                        setShowPassword({
+                          ...showPassword,
+                          [account.id]: !showPassword[account.id],
+                        })
+                      }
+                      className="p-2.5 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg transition-all"
+                    >
+                      {showPassword[account.id] ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => copyToClipboard(account.password, `pwd-${account.id}`)}
+                      className="p-2.5 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg transition-all"
+                    >
+                      {copied === `pwd-${account.id}` ? (
+                        <Check className="h-5 w-5 text-emerald-600" />
+                      ) : (
+                        <Copy className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* 2FA */}
+                  {account.twoFA && (
+                    <div className="flex items-center gap-4 bg-amber-50 dark:bg-amber-900/20 p-5 rounded-2xl border-2 border-amber-200 dark:border-amber-800">
+                      <Key className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                      <span className="text-base font-black text-amber-900 dark:text-amber-300 w-32">
+                        2FA Key:
+                      </span>
+                      <code className="flex-1 text-base font-mono font-bold text-amber-900 dark:text-amber-200">
+                        {showTwoFA[account.id] ? account.twoFA : "••••••••••••••••"}
+                      </code>
+                      <button
+                        onClick={() =>
+                          setShowTwoFA({
+                            ...showTwoFA,
+                            [account.id]: !showTwoFA[account.id],
+                          })
+                        }
+                        className="p-2.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded-lg transition-all"
+                      >
+                        {showTwoFA[account.id] ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => copyToClipboard(account.twoFA!, `2fa-${account.id}`)}
+                        className="p-2.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded-lg transition-all"
+                      >
+                        {copied === `2fa-${account.id}` ? (
+                          <Check className="h-5 w-5 text-emerald-600" />
+                        ) : (
+                          <Copy className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Notes */}
+                  {account.notes && (
+                    <div className="text-base text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 p-5 rounded-2xl">
+                      <span className="font-black">Notes: </span>
+                      {account.notes}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Card View - Medium Size (Default) */
+          <div className="space-y-4">
+            {filteredAccounts.map((account) => (
               <div
                 key={account.id}
                 className="bg-white dark:bg-slate-800 rounded-2xl p-6 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all shadow-sm hover:shadow-lg"
@@ -439,9 +743,9 @@ export default function AccountsClient({ user }: { user: User }) {
                   )}
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </main>
 
       {/* Add/Edit Modal */}
