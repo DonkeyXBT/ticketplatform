@@ -18,6 +18,7 @@ import {
   Maximize2,
 } from "lucide-react"
 import Navigation from "./Navigation"
+import TOTPDisplay from "./TOTPDisplay"
 import QRCode from "qrcode"
 
 interface User {
@@ -58,7 +59,7 @@ export default function AccountsClient({ user }: { user: User }) {
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false)
   const [editingAccount, setEditingAccount] = useState<PlatformAccount | null>(null)
   const [showPassword, setShowPassword] = useState<{ [key: string]: boolean }>({})
-  const [showTwoFA, setShowTwoFA] = useState<{ [key: string]: boolean }>({})
+  const [showTwoFASecret, setShowTwoFASecret] = useState<{ [key: string]: boolean }>({})
   const [copied, setCopied] = useState<string | null>(null)
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null)
   const [bulkText, setBulkText] = useState("")
@@ -444,35 +445,20 @@ export default function AccountsClient({ user }: { user: User }) {
                       </td>
                       <td className="px-4 py-3">
                         {account.twoFA ? (
-                          <div className="flex items-center gap-2">
-                            <code className="text-xs font-mono text-amber-900 dark:text-amber-200">
-                              {showTwoFA[account.id] ? account.twoFA : "••••••••"}
-                            </code>
-                            <button
-                              onClick={() =>
-                                setShowTwoFA({
-                                  ...showTwoFA,
-                                  [account.id]: !showTwoFA[account.id],
+                          <div className="flex items-center gap-2 -my-1">
+                            <TOTPDisplay
+                              secret={account.twoFA}
+                              accountId={account.id}
+                              onCopy={copyToClipboard}
+                              copied={copied}
+                              showSecret={showTwoFASecret[account.id]}
+                              onToggleSecret={() =>
+                                setShowTwoFASecret({
+                                  ...showTwoFASecret,
+                                  [account.id]: !showTwoFASecret[account.id],
                                 })
                               }
-                              className="p-1 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
-                            >
-                              {showTwoFA[account.id] ? (
-                                <EyeOff className="h-3 w-3" />
-                              ) : (
-                                <Eye className="h-3 w-3" />
-                              )}
-                            </button>
-                            <button
-                              onClick={() => copyToClipboard(account.twoFA!, `2fa-${account.id}`)}
-                              className="p-1 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
-                            >
-                              {copied === `2fa-${account.id}` ? (
-                                <Check className="h-3 w-3 text-emerald-600" />
-                              ) : (
-                                <Copy className="h-3 w-3" />
-                              )}
-                            </button>
+                            />
                           </div>
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
@@ -578,40 +564,19 @@ export default function AccountsClient({ user }: { user: User }) {
 
                   {/* 2FA */}
                   {account.twoFA && (
-                    <div className="flex items-center gap-4 bg-amber-50 dark:bg-amber-900/20 p-5 rounded-2xl border-2 border-amber-200 dark:border-amber-800">
-                      <Key className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-                      <span className="text-base font-black text-amber-900 dark:text-amber-300 w-32">
-                        2FA Key:
-                      </span>
-                      <code className="flex-1 text-base font-mono font-bold text-amber-900 dark:text-amber-200">
-                        {showTwoFA[account.id] ? account.twoFA : "••••••••••••••••"}
-                      </code>
-                      <button
-                        onClick={() =>
-                          setShowTwoFA({
-                            ...showTwoFA,
-                            [account.id]: !showTwoFA[account.id],
-                          })
-                        }
-                        className="p-2.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded-lg transition-all"
-                      >
-                        {showTwoFA[account.id] ? (
-                          <EyeOff className="h-5 w-5" />
-                        ) : (
-                          <Eye className="h-5 w-5" />
-                        )}
-                      </button>
-                      <button
-                        onClick={() => copyToClipboard(account.twoFA!, `2fa-${account.id}`)}
-                        className="p-2.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded-lg transition-all"
-                      >
-                        {copied === `2fa-${account.id}` ? (
-                          <Check className="h-5 w-5 text-emerald-600" />
-                        ) : (
-                          <Copy className="h-5 w-5" />
-                        )}
-                      </button>
-                    </div>
+                    <TOTPDisplay
+                      secret={account.twoFA}
+                      accountId={account.id}
+                      onCopy={copyToClipboard}
+                      copied={copied}
+                      showSecret={showTwoFASecret[account.id]}
+                      onToggleSecret={() =>
+                        setShowTwoFASecret({
+                          ...showTwoFASecret,
+                          [account.id]: !showTwoFASecret[account.id],
+                        })
+                      }
+                    />
                   )}
 
                   {/* Notes */}
@@ -698,40 +663,19 @@ export default function AccountsClient({ user }: { user: User }) {
 
                   {/* 2FA */}
                   {account.twoFA && (
-                    <div className="flex items-center gap-3 bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-200 dark:border-amber-800">
-                      <Key className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                      <span className="text-sm font-bold text-amber-900 dark:text-amber-300 w-24">
-                        2FA Key:
-                      </span>
-                      <code className="flex-1 text-sm font-mono text-amber-900 dark:text-amber-200">
-                        {showTwoFA[account.id] ? account.twoFA : "••••••••••••••••"}
-                      </code>
-                      <button
-                        onClick={() =>
-                          setShowTwoFA({
-                            ...showTwoFA,
-                            [account.id]: !showTwoFA[account.id],
-                          })
-                        }
-                        className="p-1.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
-                      >
-                        {showTwoFA[account.id] ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
-                      </button>
-                      <button
-                        onClick={() => copyToClipboard(account.twoFA!, `2fa-${account.id}`)}
-                        className="p-1.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
-                      >
-                        {copied === `2fa-${account.id}` ? (
-                          <Check className="h-4 w-4 text-emerald-600" />
-                        ) : (
-                          <Copy className="h-4 w-4" />
-                        )}
-                      </button>
-                    </div>
+                    <TOTPDisplay
+                      secret={account.twoFA}
+                      accountId={account.id}
+                      onCopy={copyToClipboard}
+                      copied={copied}
+                      showSecret={showTwoFASecret[account.id]}
+                      onToggleSecret={() =>
+                        setShowTwoFASecret({
+                          ...showTwoFASecret,
+                          [account.id]: !showTwoFASecret[account.id],
+                        })
+                      }
+                    />
                   )}
 
                   {/* Notes */}
