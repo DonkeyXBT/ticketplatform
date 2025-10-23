@@ -1,17 +1,32 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { getAuthFromRequest } from "@/lib/jwt"
 
-export async function GET() {
+async function getUserId(request?: Request): Promise<string | null> {
+  // Try JWT auth first (for mobile)
+  if (request) {
+    const jwtUser = await getAuthFromRequest(request)
+    if (jwtUser?.userId) {
+      return jwtUser.userId
+    }
+  }
+
+  // Fall back to session auth (for web)
   const session = await auth()
+  return session?.user?.id || null
+}
 
-  if (!session?.user) {
+export async function GET(request: Request) {
+  const userId = await getUserId(request)
+
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const tickets = await prisma.ticket.findMany({
     where: {
-      userId: session.user.id,
+      userId: userId,
     },
     include: {
       sales: {
@@ -41,9 +56,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await auth()
+  const userId = await getUserId(req)
 
-  if (!session?.user) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
@@ -66,7 +81,7 @@ export async function POST(req: Request) {
   const ticket = await prisma.ticket.create({
     data: {
       ...data,
-      userId: session.user.id,
+      userId: userId,
       quantity,
       buyInPrice,
       buyCurrency,

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct SalesManagerView: View {
     let ticket: Ticket

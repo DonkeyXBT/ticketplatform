@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()

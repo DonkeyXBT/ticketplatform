@@ -1,13 +1,82 @@
+"use client"
+
 import { Ticket } from "lucide-react"
-import { auth } from "@/lib/auth"
-import { redirect } from "next/navigation"
-import { signInWithDiscord } from "@/app/actions/auth"
+import { useSession } from "next-auth/react"
+import { signIn } from "next-auth/react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
 
-export default async function LoginPage() {
-  const session = await auth()
+export default function LoginPage() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [isGeneratingToken, setIsGeneratingToken] = useState(false)
 
-  if (session?.user) {
-    redirect("/dashboard")
+  // Check if this is a mobile login request
+  const isMobile = searchParams.get("mobile") === "true"
+
+  useEffect(() => {
+    async function handleAuthentication() {
+      // If checking auth status, show loading
+      if (status === "loading") {
+        return
+      }
+
+      // If authenticated, handle redirect immediately
+      if (status === "authenticated" && session?.user) {
+        if (isMobile) {
+          // Mobile login - generate token and redirect to app IMMEDIATELY
+          setIsGeneratingToken(true)
+          try {
+            const response = await fetch("/api/auth/mobile-token")
+            if (response.ok) {
+              const data = await response.json()
+
+              // Redirect back to iOS app
+              const appUrl = `ticketplatform://auth-callback?token=${encodeURIComponent(
+                data.token
+              )}&user=${encodeURIComponent(JSON.stringify(data.user))}`
+
+              console.log("Already logged in! Redirecting to app...")
+              window.location.href = appUrl
+            } else {
+              console.error("Failed to generate token")
+              setIsGeneratingToken(false)
+            }
+          } catch (error) {
+            console.error("Token generation error:", error)
+            setIsGeneratingToken(false)
+          }
+        } else {
+          // Web login - redirect to dashboard
+          router.push("/dashboard")
+        }
+      }
+    }
+
+    handleAuthentication()
+  }, [session, status, isMobile, router])
+
+  if (status === "loading" || isGeneratingToken) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        </div>
+
+        <div className="relative z-10 text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-amber-500 mx-auto mb-4"></div>
+          <p className="text-white text-xl font-semibold mb-2">
+            {status === "loading" ? "Checking login status..." : "Opening app..."}
+          </p>
+          <p className="text-white/60 text-sm">
+            {status === "loading" ? "Please wait" : "You're already logged in!"}
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -43,9 +112,13 @@ export default async function LoginPage() {
 
           {/* Card Body */}
           <div className="p-8">
-            <form action={signInWithDiscord} className="space-y-6">
+            <div className="space-y-6">
               <button
-                type="submit"
+                onClick={() => {
+                  const callbackUrl = isMobile ? "/login?mobile=true" : "/dashboard"
+                  signIn("discord", { callbackUrl })
+                }}
+                type="button"
                 className="group relative w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 shadow-lg hover:shadow-2xl hover:shadow-indigo-500/50 transform hover:scale-[1.02] overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
@@ -59,7 +132,7 @@ export default async function LoginPage() {
                 </svg>
                 <span className="text-lg relative z-10">Sign in with Discord</span>
               </button>
-            </form>
+            </div>
 
             {/* Features */}
             <div className="mt-8 grid grid-cols-2 gap-4">

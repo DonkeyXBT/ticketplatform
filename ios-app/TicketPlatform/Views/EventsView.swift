@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct EventsView: View {
     @StateObject private var viewModel = EventsViewModel()
