@@ -66,57 +66,53 @@ export default function TOTPDisplay({
 
   return (
     <div className="flex items-center gap-3 bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-200 dark:border-amber-800">
-      <Key className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-      <div className="flex-1">
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-bold text-amber-900 dark:text-amber-300 w-24">
-            2FA Code:
-          </span>
-          <div className="flex-1">
-            {showSecret ? (
-              <code className="text-sm font-mono text-amber-900 dark:text-amber-200 font-bold">
-                {secret}
-              </code>
-            ) : (
-              <div className="flex items-center gap-3">
-                <code className="text-2xl font-mono font-black text-amber-900 dark:text-amber-100 tracking-wider">
-                  {code.slice(0, 3)} {code.slice(3)}
-                </code>
-                <div className="flex flex-col items-center">
-                  <div
-                    className={`text-xs font-bold ${
-                      timeRemaining <= 5
-                        ? "text-rose-600 dark:text-rose-400"
-                        : "text-amber-700 dark:text-amber-300"
-                    }`}
-                  >
-                    {timeRemaining}s
-                  </div>
-                  <div className="w-12 h-1 bg-amber-200 dark:bg-amber-800 rounded-full overflow-hidden mt-1">
-                    <div
-                      className={`h-full transition-all duration-1000 ease-linear ${
-                        timeRemaining <= 5
-                          ? "bg-rose-500 dark:bg-rose-400"
-                          : "bg-amber-600 dark:bg-amber-400"
-                      }`}
-                      style={{ width: `${(timeRemaining / 30) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
+      <Key className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+      <span className="text-sm font-bold text-amber-900 dark:text-amber-300 w-20 flex-shrink-0">
+        2FA:
+      </span>
+      <div className="flex-1 min-w-0">
+        {showSecret ? (
+          <div>
+            <code className="text-sm font-mono text-amber-900 dark:text-amber-200">
+              {secret}
+            </code>
+            <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
+              Secret Key
+            </p>
           </div>
-        </div>
-        {showSecret && (
-          <p className="text-xs text-amber-700 dark:text-amber-400 mt-1 ml-28">
-            Secret Key (for backup/transfer)
-          </p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <code className="text-lg font-mono font-black text-amber-900 dark:text-amber-100 tracking-wide">
+              {code.slice(0, 3)} {code.slice(3)}
+            </code>
+            <div className="flex items-center gap-1.5">
+              <div
+                className={`text-xs font-bold ${
+                  timeRemaining <= 5
+                    ? "text-rose-600 dark:text-rose-400"
+                    : "text-amber-700 dark:text-amber-300"
+                }`}
+              >
+                {timeRemaining}s
+              </div>
+              <div className="w-10 h-1 bg-amber-200 dark:bg-amber-800 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-1000 ease-linear ${
+                    timeRemaining <= 5
+                      ? "bg-rose-500 dark:bg-rose-400"
+                      : "bg-amber-600 dark:bg-amber-400"
+                  }`}
+                  style={{ width: `${(timeRemaining / 30) * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
         )}
       </div>
       {onToggleSecret && (
         <button
           onClick={onToggleSecret}
-          className="p-1.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
+          className="p-1.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all flex-shrink-0"
           title={showSecret ? "Show live code" : "Show secret key"}
         >
           <Key className="h-4 w-4" />
@@ -124,7 +120,7 @@ export default function TOTPDisplay({
       )}
       <button
         onClick={() => onCopy(showSecret ? secret : code, `2fa-${accountId}`)}
-        className="p-1.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
+        className="p-1.5 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all flex-shrink-0"
         title={showSecret ? "Copy secret key" : "Copy current code"}
       >
         {copied === `2fa-${accountId}` ? (
