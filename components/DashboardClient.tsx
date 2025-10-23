@@ -13,14 +13,26 @@ import {
   Trash2,
   X,
   Download,
+  Users,
 } from "lucide-react"
 import { format } from "date-fns"
 import TicketModal from "./TicketModal"
+import SalesManager from "./SalesManager"
 import Navigation from "./Navigation"
 import {
   convertCurrencySync,
   formatCurrency,
 } from "@/lib/currency"
+
+interface Sale {
+  id: string
+  quantitySold: number
+  salePrice: number | null
+  sellCurrency: string | null
+  profit: number | null
+  profitCurrency: string | null
+  createdAt: Date
+}
 
 interface Ticket {
   id: string
@@ -31,7 +43,7 @@ interface Ticket {
   section: string | null
   row: string | null
   seat: string | null
-  quantity: number | null
+  quantity: number
   email: string | null
   orderNumber: string | null
   buyInPrice: number | null
@@ -46,6 +58,9 @@ interface Ticket {
   siteSold: string | null
   deliveryEmail: string | null
   deliveryName: string | null
+  sales: Sale[]
+  totalSold: number
+  remainingQuantity: number
 }
 
 interface User {
@@ -97,6 +112,8 @@ export default function DashboardClient({
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
+  const [isSalesManagerOpen, setIsSalesManagerOpen] = useState(false)
+  const [managingSalesTicket, setManagingSalesTicket] = useState<Ticket | null>(null)
 
   // Save currency preference to localStorage whenever it changes
   const handleCurrencyChange = (newCurrency: string) => {
@@ -169,6 +186,18 @@ export default function DashboardClient({
     })
   }, [tickets, searchQuery, selectedPlatform, selectedStatus])
 
+  const fetchTickets = async () => {
+    try {
+      const res = await fetch("/api/tickets")
+      if (res.ok) {
+        const data = await res.json()
+        setTickets(data)
+      }
+    } catch (error) {
+      console.error("Error fetching tickets:", error)
+    }
+  }
+
   const handleAddTicket = () => {
     setEditingTicket(null)
     setIsModalOpen(true)
@@ -177,6 +206,11 @@ export default function DashboardClient({
   const handleEditTicket = (ticket: Ticket) => {
     setEditingTicket(ticket)
     setIsModalOpen(true)
+  }
+
+  const handleManageSales = (ticket: Ticket) => {
+    setManagingSalesTicket(ticket)
+    setIsSalesManagerOpen(true)
   }
 
   const handleDeleteTicket = async (id: string) => {
@@ -616,6 +650,13 @@ export default function DashboardClient({
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">
                         <button
+                          onClick={() => handleManageSales(ticket)}
+                          className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 p-2 rounded-lg transition-all mr-2"
+                          title="Manage Sales"
+                        >
+                          <Users className="h-5 w-5" />
+                        </button>
+                        <button
                           onClick={() => handleEditTicket(ticket)}
                           className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 p-2 rounded-lg transition-all mr-2"
                         >
@@ -795,21 +836,39 @@ export default function DashboardClient({
                   </div>
 
                   {/* Card Footer - Actions */}
-                  <div className="bg-slate-50 dark:bg-slate-900/50 p-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-end space-x-2">
-                    <button
-                      onClick={() => handleEditTicket(ticket)}
-                      className="flex items-center space-x-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 text-sm font-bold"
-                    >
-                      <Edit className="h-3.5 w-3.5" />
-                      <span>Edit</span>
-                    </button>
-                    <button
-                      onClick={() => handleDeleteTicket(ticket.id)}
-                      className="flex items-center space-x-1 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-all duration-200 text-sm font-bold"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                      <span>Delete</span>
-                    </button>
+                  <div className="bg-slate-50 dark:bg-slate-900/50 p-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-400">
+                      <span>{ticket.totalSold} / {ticket.quantity} sold</span>
+                      {ticket.remainingQuantity > 0 && (
+                        <span className="px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded">
+                          {ticket.remainingQuantity} left
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => handleManageSales(ticket)}
+                        className="flex items-center space-x-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-all duration-200 text-sm font-bold"
+                        title="Manage Sales"
+                      >
+                        <Users className="h-3.5 w-3.5" />
+                        <span>Sales</span>
+                      </button>
+                      <button
+                        onClick={() => handleEditTicket(ticket)}
+                        className="flex items-center space-x-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 text-sm font-bold"
+                      >
+                        <Edit className="h-3.5 w-3.5" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTicket(ticket.id)}
+                        className="flex items-center space-x-1 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-all duration-200 text-sm font-bold"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))
@@ -827,6 +886,19 @@ export default function DashboardClient({
             setEditingTicket(null)
           }}
           onSave={handleSaveTicket}
+        />
+      )}
+
+      {/* Sales Manager Modal */}
+      {isSalesManagerOpen && managingSalesTicket && (
+        <SalesManager
+          ticket={managingSalesTicket}
+          onClose={() => {
+            setIsSalesManagerOpen(false)
+            setManagingSalesTicket(null)
+            // Refresh tickets to get updated sales data
+            fetchTickets()
+          }}
         />
       )}
     </div>

@@ -14,10 +14,29 @@ export default async function DashboardPage() {
     where: {
       userId: session.user.id,
     },
+    include: {
+      sales: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
     orderBy: {
       createdAt: "desc",
     },
   })
 
-  return <DashboardClient tickets={tickets} user={session.user} />
+  // Add computed fields for each ticket
+  const ticketsWithComputed = tickets.map((ticket) => {
+    const totalSold = ticket.sales.reduce((sum, sale) => sum + sale.quantitySold, 0)
+    const remainingQuantity = ticket.quantity - totalSold
+
+    return {
+      ...ticket,
+      totalSold,
+      remainingQuantity,
+    }
+  })
+
+  return <DashboardClient tickets={ticketsWithComputed} user={session.user} />
 }
