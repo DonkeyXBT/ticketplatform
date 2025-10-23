@@ -11,6 +11,7 @@ interface TOTPDisplayProps {
   copied: string | null
   showSecret?: boolean
   onToggleSecret?: () => void
+  compact?: boolean
 }
 
 export default function TOTPDisplay({
@@ -20,6 +21,7 @@ export default function TOTPDisplay({
   copied,
   showSecret = false,
   onToggleSecret,
+  compact = false,
 }: TOTPDisplayProps) {
   const [code, setCode] = useState<string>("")
   const [timeRemaining, setTimeRemaining] = useState<number>(30)
@@ -64,6 +66,55 @@ export default function TOTPDisplay({
 
   if (!secret) return null
 
+  // Compact mode for list view
+  if (compact) {
+    return (
+      <div className="flex items-center gap-1.5">
+        {showSecret ? (
+          <code className="text-xs font-mono text-amber-900 dark:text-amber-200">
+            {secret.slice(0, 12)}...
+          </code>
+        ) : (
+          <>
+            <code className="text-sm font-mono font-bold text-amber-900 dark:text-amber-100">
+              {code.slice(0, 3)} {code.slice(3)}
+            </code>
+            <span
+              className={`text-xs font-bold ${
+                timeRemaining <= 5
+                  ? "text-rose-600 dark:text-rose-400"
+                  : "text-amber-700 dark:text-amber-400"
+              }`}
+            >
+              {timeRemaining}s
+            </span>
+          </>
+        )}
+        {onToggleSecret && (
+          <button
+            onClick={onToggleSecret}
+            className="p-1 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
+            title={showSecret ? "Show live code" : "Show secret key"}
+          >
+            <Key className="h-3 w-3" />
+          </button>
+        )}
+        <button
+          onClick={() => onCopy(showSecret ? secret : code, `2fa-${accountId}`)}
+          className="p-1 hover:bg-amber-200 dark:hover:bg-amber-800 rounded transition-all"
+          title={showSecret ? "Copy secret key" : "Copy current code"}
+        >
+          {copied === `2fa-${accountId}` ? (
+            <Check className="h-3 w-3 text-emerald-600" />
+          ) : (
+            <Copy className="h-3 w-3" />
+          )}
+        </button>
+      </div>
+    )
+  }
+
+  // Regular mode for card and detailed views
   return (
     <div className="flex items-center gap-3 bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-200 dark:border-amber-800">
       <Key className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />

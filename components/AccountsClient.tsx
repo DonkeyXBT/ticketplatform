@@ -458,6 +458,7 @@ export default function AccountsClient({ user }: { user: User }) {
                                   [account.id]: !showTwoFASecret[account.id],
                                 })
                               }
+                              compact={true}
                             />
                           </div>
                         ) : (
