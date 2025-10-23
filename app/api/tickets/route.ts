@@ -90,37 +90,67 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const data = await req.json()
+  try {
+    const data = await req.json()
+    console.log("📝 Creating ticket for user:", userId)
 
-  // Calculate profit in the buy currency
-  const buyInPrice = parseFloat(data.buyInPrice) || 0
-  const salePrice = parseFloat(data.salePrice) || 0
-  const quantity = parseInt(data.quantity) || 1
+    // Parse fields from iOS (snake_case) or web (camelCase)
+    const artist = data.artist || null
+    const location = data.location || null
+    const eventDate = data.event_date || data.eventDate
+    const section = data.section || null
+    const row = data.row || null
+    const seat = data.seat || null
+    const quantity = parseInt(data.quantity) || 1
+    const buyInPrice = data.buy_in_price || data.buyInPrice ? parseFloat(data.buy_in_price || data.buyInPrice) : null
+    const buyCurrency = data.buy_currency || data.buyCurrency || "USD"
+    const boughtFrom = data.bought_from || data.boughtFrom || null
+    const orderNumber = data.order_number || data.orderNumber || null
+    const emailUsed = data.email_used || data.emailUsed || null
+    const status = "Listed"
 
-  // Import currency conversion
-  const { convertCurrencySync } = await import("@/lib/currency")
-  const buyCurrency = data.buyCurrency || "USD"
-  const sellCurrency = data.sellCurrency || "USD"
+    const ticket = await prisma.ticket.create({
+      data: {
+        userId: userId,
+        artist,
+        location,
+        eventDate: eventDate ? new Date(eventDate) : null,
+        section,
+        row,
+        seat,
+        quantity,
+        buyInPrice,
+        buyCurrency,
+        platform: boughtFrom,
+        status,
+        orderNumber,
+        email: emailUsed,
+      },
+      include: {
+        sales: true,
+      },
+    })
 
-  // Convert sale price to buy currency for profit calculation
-  const saleInBuyCurrency = convertCurrencySync(salePrice, sellCurrency, buyCurrency)
-  const profit = saleInBuyCurrency - buyInPrice
+    console.log("✅ Created ticket:", ticket.id)
 
-  const ticket = await prisma.ticket.create({
-    data: {
-      ...data,
-      userId: userId,
-      quantity,
-      buyInPrice,
-      buyCurrency,
-      salePrice,
-      sellCurrency,
-      profit,
-      profitCurrency: buyCurrency,
-      purchaseDate: data.purchaseDate ? new Date(data.purchaseDate) : null,
-      eventDate: data.eventDate ? new Date(data.eventDate) : null,
-    },
-  })
+    // Add computed fields
+    const ticketWithComputed = {
+      ...ticket,
+      totalSold: 0,
+      remainingQuantity: quantity,
+      totalRevenue: 0,
+      totalProfit: 0,
+    }
 
-  return NextResponse.json(ticket)
+    // Convert to snake_case for iOS app
+    const ticketSnakeCase = toSnakeCase(ticketWithComputed)
+
+    return NextResponse.json(ticketSnakeCase)
+  } catch (error) {
+    console.error("❌ Error creating ticket:", error)
+    return NextResponse.json(
+      { error: "Failed to create ticket" },
+      { status: 500 }
+    )
+  }
 }
