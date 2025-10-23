@@ -345,9 +345,16 @@ export default function DashboardClient({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors">
-      {/* Animated Background Pattern */}
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] pointer-events-none"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+      {/* Animated Background Grid */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_110%)] pointer-events-none"></div>
+
+      {/* Animated Gradient Orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
 
       {/* Navigation */}
       <Navigation
@@ -361,73 +368,73 @@ export default function DashboardClient({
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-purple-100 dark:border-purple-900/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn">
+          <div className="group glass rounded-3xl shadow-2xl p-6 hover:shadow-amber-500/20 hover:scale-[1.02] transition-all duration-300 animate-scaleIn">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                <p className="text-sm font-semibold text-white/60 uppercase tracking-wide">
                   Total Tickets
                 </p>
-                <p className="text-4xl font-black text-slate-900 dark:text-white mt-2">
+                <p className="text-4xl font-black text-white mt-2">
                   {stats.totalTickets}
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-4 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+              <div className="bg-gradient-to-br from-amber-500 to-orange-500 p-4 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
                 <Ticket className="h-7 w-7 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-emerald-100 dark:border-emerald-900/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn" style={{animationDelay: "0.1s"}}>
+          <div className="group glass rounded-3xl shadow-2xl p-6 hover:shadow-emerald-500/20 hover:scale-[1.02] transition-all duration-300 animate-scaleIn" style={{animationDelay: "0.1s"}}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                <p className="text-sm font-semibold text-white/60 uppercase tracking-wide">
                   Tickets Sold
                 </p>
-                <p className="text-4xl font-black text-slate-900 dark:text-white mt-2">
+                <p className="text-4xl font-black text-white mt-2">
                   {stats.soldTickets}
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-4 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+              <div className="bg-gradient-to-br from-emerald-500 to-green-500 p-4 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
                 <BarChart3 className="h-7 w-7 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-blue-100 dark:border-blue-900/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn" style={{animationDelay: "0.2s"}}>
+          <div className="group glass rounded-3xl shadow-2xl p-6 hover:shadow-blue-500/20 hover:scale-[1.02] transition-all duration-300 animate-scaleIn" style={{animationDelay: "0.2s"}}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                <p className="text-sm font-semibold text-white/60 uppercase tracking-wide">
                   Total Revenue
                 </p>
-                <p className="text-4xl font-black text-slate-900 dark:text-white mt-2">
+                <p className="text-4xl font-black text-white mt-2">
                   {formatCurrency(stats.totalRevenue, displayCurrency)}
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-4 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+              <div className="bg-gradient-to-br from-blue-500 to-cyan-500 p-4 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
                 <DollarSign className="h-7 w-7 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-emerald-100 dark:border-emerald-900/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn" style={{animationDelay: "0.3s"}}>
+          <div className="group glass rounded-3xl shadow-2xl p-6 hover:shadow-emerald-500/20 hover:scale-[1.02] transition-all duration-300 animate-scaleIn" style={{animationDelay: "0.3s"}}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                <p className="text-sm font-semibold text-white/60 uppercase tracking-wide">
                   Total Profit
                 </p>
                 <p
                   className={`text-4xl font-black mt-2 ${
-                    stats.totalProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
+                    stats.totalProfit >= 0 ? "text-emerald-400" : "text-rose-400"
                   }`}
                 >
                   {formatCurrency(stats.totalProfit, displayCurrency)}
                 </p>
               </div>
               <div
-                className={`p-4 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
+                className={`p-4 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
                   stats.totalProfit >= 0
-                    ? "bg-gradient-to-br from-emerald-500 to-green-600"
-                    : "bg-gradient-to-br from-rose-500 to-red-600"
+                    ? "bg-gradient-to-br from-emerald-500 to-green-500"
+                    : "bg-gradient-to-br from-rose-500 to-red-500"
                 }`}
               >
                 <TrendingUp className="h-7 w-7 text-white" />
@@ -437,7 +444,7 @@ export default function DashboardClient({
         </div>
 
         {/* Filters and Actions */}
-        <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6 border border-indigo-100 dark:border-slate-700 animate-fadeIn">
+        <div className="glass rounded-3xl shadow-2xl p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
             <div className="flex flex-col sm:flex-row gap-4 flex-1">
               {/* Search */}
