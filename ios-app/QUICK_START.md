@@ -93,20 +93,24 @@ Done! All files are added.
 
 ## Step 4: Update API URL (30 seconds)
 
-1. In Xcode, open: `Services/APIService.swift`
+1. In Xcode, open: `Utilities/Configuration.swift`
 
-2. Find line 23 (around there):
+2. Find line 32 (around there):
 ```swift
-self.baseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3000"
+case .development:
+    return "http://192.168.1.100:3000"
 ```
 
 3. Change to YOUR Mac's IP:
 ```swift
-self.baseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://192.168.1.100:3000"
+case .development:
+    return "http://192.168.1.50:3000"  // YOUR IP here!
 ```
-*(Replace `192.168.1.100` with the IP you wrote down!)*
+*(Replace with the IP you wrote down!)*
 
 4. Save: **Cmd+S**
+
+**Note:** The production URL (for TestFlight/App Store) is already configured in the same file at line 39.
 
 ---
 
@@ -195,7 +199,29 @@ Both web app AND iOS app can see it!
 
 - **Read full guide**: `SETUP_GUIDE.md` for detailed explanations
 - **Test all features**: Sales, accounts, events
-- **Deploy**: When ready, change API URL to production
+- **Deploy to production**: See `PRODUCTION_DEPLOYMENT.md` for Vercel deployment
+
+---
+
+## 🚀 Production Deployment
+
+Ready to deploy to TestFlight or App Store?
+
+The app is already configured for production deployment:
+- **Development** (Debug): Uses your Mac's IP
+- **Production** (Release): Uses your Vercel URL
+
+Just update your Vercel URL in `Configuration.swift` line 39:
+```swift
+case .production:
+    return "https://your-domain.vercel.app"
+```
+
+**Complete guide:** See [PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md) for:
+- Vercel configuration
+- TestFlight submission
+- App Store deployment
+- Environment switching
 
 ---
 

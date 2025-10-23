@@ -14,13 +14,19 @@ class APIService {
     private let session: URLSession
 
     private init() {
-        // Use environment variable or default to localhost
-        self.baseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3000"
+        // Use configuration from Configuration.swift
+        // Automatically switches between development and production
+        self.baseURL = Configuration.apiBaseURL
 
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 30
         configuration.timeoutIntervalForResource = 300
         self.session = URLSession(configuration: configuration)
+
+        // Print configuration in debug mode
+        if Configuration.isDebug {
+            Configuration.printConfiguration()
+        }
     }
 
     // MARK: - Generic Request Method

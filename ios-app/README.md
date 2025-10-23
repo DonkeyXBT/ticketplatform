@@ -39,11 +39,12 @@ The app matches the web platform's design with:
 
 **Want to get started fast?**
 
-### Option 1: Super Quick (5 minutes)
-Follow **[QUICK_START.md](./QUICK_START.md)** for a streamlined setup guide.
+### Development Setup
+- **[QUICK_START.md](./QUICK_START.md)** - 5-minute setup (local testing)
+- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete walkthrough with explanations
 
-### Option 2: Detailed Guide (Complete walkthrough)
-Follow **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** for step-by-step instructions with explanations.
+### Production Deployment
+- **[PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md)** - Deploy to TestFlight & App Store with Vercel backend
 
 ---
 
@@ -342,26 +343,58 @@ Mock data in previews:
 
 ---
 
-## Deployment
+## Deployment to Production
 
-### TestFlight
-1. Archive the app in Xcode
-2. Upload to App Store Connect
-3. Submit for TestFlight review
-4. Share with beta testers
+The iOS app is designed to work seamlessly with your **Vercel-deployed backend**.
 
-### App Store
-1. Complete app metadata
-2. Add screenshots (required sizes)
-3. Set pricing
-4. Submit for review
+### Environment Configuration
 
-### Configuration
-Update Info.plist:
-- Display name
-- Bundle version
-- Required capabilities
-- Privacy descriptions
+The app automatically switches between environments:
+
+**Development (Debug builds)**:
+- Uses local Mac IP address
+- Connects to `npm run dev` backend
+- Configured in `Configuration.swift` line 32
+
+**Production (Release builds)**:
+- Uses Vercel deployment URL
+- Connects to live backend
+- Configured in `Configuration.swift` line 39
+
+### Quick Production Setup
+
+1. **Update Vercel URL** in `Utilities/Configuration.swift`:
+```swift
+case .production:
+    return "https://your-domain.vercel.app"
+```
+
+2. **Verify Vercel backend** is deployed and running
+
+3. **Archive app** in Xcode (Product → Archive)
+
+4. **Upload to TestFlight** via App Store Connect
+
+### Complete Production Guide
+
+**See [PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md) for:**
+- Full Vercel configuration
+- TestFlight submission process
+- App Store deployment
+- Environment variable setup
+- Testing production builds
+- Troubleshooting production issues
+
+### Deployment Checklist
+
+Before deploying to production:
+- [ ] Vercel backend URL updated in Configuration.swift
+- [ ] Backend deployed and accessible via HTTPS
+- [ ] Discord OAuth configured with production callback
+- [ ] App icon added (1024x1024px)
+- [ ] Bundle identifier set
+- [ ] Version numbers configured
+- [ ] Tested with production API
 
 ---
 

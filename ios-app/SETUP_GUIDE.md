@@ -222,31 +222,43 @@ The dev server should show:
 
 #### Configure iOS App
 
-Open `Services/APIService.swift` and find this line:
+Open `Utilities/Configuration.swift` and find this section (around line 32):
 
 ```swift
-self.baseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3000"
+case .development:
+    // For development, use this default
+    return "http://192.168.1.100:3000"
 ```
 
-Change the default to your Mac's IP:
+Change to your Mac's IP:
 
 ```swift
-self.baseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://192.168.1.100:3000"
+case .development:
+    return "http://192.168.1.50:3000"  // YOUR Mac's IP here!
 ```
 
-**Replace `192.168.1.100` with YOUR Mac's actual IP address!**
+**Replace `192.168.1.50` with YOUR Mac's actual IP address!**
 
-### 3.2 For Production
+**Note**: The production URL is already configured in the same file for when you deploy to TestFlight/App Store.
 
-When deploying to production:
+### 3.2 For Production (Vercel Deployment)
 
-1. In Xcode: **Product → Scheme → Edit Scheme**
-2. Select **Run** on the left
-3. Go to **Arguments** tab
-4. Under **Environment Variables**, click **+**
-5. Add:
-   - **Name**: `API_BASE_URL`
-   - **Value**: `https://your-domain.vercel.app`
+When deploying to production with Vercel backend:
+
+Open `Utilities/Configuration.swift` and update line 39:
+
+```swift
+case .production:
+    return "https://your-domain.vercel.app"  // Your Vercel URL
+```
+
+Replace with your actual Vercel deployment URL.
+
+**The app automatically uses the right environment:**
+- **Debug builds** (Cmd+R in Xcode) → Development URL (your Mac)
+- **Release builds** (TestFlight/App Store) → Production URL (Vercel)
+
+**For complete production deployment instructions, see [PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md)**
 
 ---
 
