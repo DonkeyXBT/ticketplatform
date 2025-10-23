@@ -1,6 +1,8 @@
 # 🎫 Ticket Platform
 
-> A modern, full-stack web application for professional ticket resellers. Track inventory, manage multiple buyers per ticket, calculate profits automatically, and streamline your ticket business across all major platforms.
+**The all-in-one platform for professional ticket resellers**
+
+A powerful, modern web application built to solve the complexities of ticket reselling at scale. Whether you're managing dozens of events or thousands of tickets, this platform gives you complete control over your inventory, sales, and profits.
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
@@ -9,83 +11,83 @@
 
 ---
 
-## 🌟 Key Features
+## 🎯 What We're Building
 
-### 📊 **Ticket Management**
-- **Add, Edit, Delete** tickets with comprehensive event details
-- **Quantity Tracking** - Know exactly how many tickets you have
-- **Multiple View Modes** - List, Card, or Detailed view
-- **Real-time Statistics** - Total tickets, revenue, and profit at a glance
-- **Search & Filter** - Quickly find tickets by artist, location, platform, or status
+The ticket reselling business is complex. You're managing:
+- Purchases across multiple platforms (Ticketmaster, AXS, SeeTickets...)
+- Sales to different buyers on different marketplaces (StubHub, Viagogo...)
+- Accounts with 2FA codes you need to access constantly
+- Profit calculations across different currencies
+- Delivery tracking for multiple buyers per ticket order
+- Upcoming events that need delivery reminders
 
-### 💰 **Partial Sales System**
-- **Sell to Multiple Buyers** - Split a 6-ticket order across multiple buyers
-- **Individual Sale Tracking** - Each sale has its own buyer info and delivery details
-- **Automatic Calculations** - Profit calculated per sale automatically
-- **Remaining Quantity** - Always know how many tickets are left to sell
-- **Ticket Sent Tracking** - Mark tickets as sent/not sent per buyer
-- **Status Auto-Updates** - Listed → Pending → Sold based on sales
-
-### 🔐 **Platform Account Management**
-- **Secure Credential Storage** - AES-256-GCM encrypted passwords and 2FA keys
-- **Multi-Platform Support** - Ticketmaster, AXS, SeeTickets, Stubhub, Viagogo, and more
-- **Live 2FA Code Generator** - Built-in authenticator with 30-second rotation
-- **Bulk Import** - Add multiple accounts at once via textarea
-- **QR Code Generation** - Easy setup with authenticator apps
-- **Tab Organization** - Separate tabs for each platform
-
-### 💵 **Multi-Currency Support**
-- **14 Major Currencies** - USD, EUR, GBP, JPY, and more
-- **Real-time Conversion** - Automatic conversion for profit calculations
-- **Per-Ticket Pricing** - Buy and sell in different currencies
-- **Accurate Profit** - Currency conversion handled automatically
-
-### 🤖 **Discord Bot Integration**
-- **Delivery Reminders** - Automatic reminders 7 days before events
-- **Per-Sale Notifications** - Each buyer gets their own reminder
-- **Acknowledgment System** - Mark reminders as acknowledged
-- **Bot API Endpoints** - Fully integrated with Discord bot
-
-### 🎨 **Modern UI/UX**
-- **Dark Mode Support** - Beautiful dark theme with smooth transitions
-- **Responsive Design** - Works perfectly on mobile, tablet, and desktop
-- **Gradient Styling** - Modern gradient effects throughout
-- **Animated Components** - Smooth animations and transitions
-- **Loading States** - Clear feedback for all operations
-
-### 🔒 **Security & Authentication**
-- **Discord OAuth** - Secure login with your Discord account
-- **NextAuth.js v5** - Latest Auth.js implementation
-- **Encrypted Storage** - Sensitive data encrypted at rest
-- **User Isolation** - Each user sees only their own data
+**This platform solves all of that in one place.**
 
 ---
 
-## 🚀 Tech Stack
+## ✨ What You Can Do
 
-| Category | Technology |
-|----------|------------|
-| **Frontend** | Next.js 15 with React 19, TypeScript |
-| **Styling** | Tailwind CSS with custom theme |
-| **Database** | PostgreSQL (Neon) |
-| **ORM** | Prisma 6 |
-| **Authentication** | NextAuth.js v5 (Auth.js) |
-| **2FA Generation** | OTPAuth library |
-| **Encryption** | AES-256-GCM (Node.js crypto) |
-| **Icons** | Lucide React |
-| **Date Handling** | date-fns |
+### 📊 Manage Your Entire Inventory
+- Track every ticket with complete event details
+- See total tickets, revenue, and profit at a glance
+- Search and filter by artist, venue, platform, or status
+- Multiple view modes: list, card, or detailed view
+
+### 💰 Sell to Multiple Buyers Per Ticket Order
+The game-changing feature that sets this platform apart:
+- Buy 6 tickets, sell them to 3 different buyers
+- Each sale tracks individually with its own buyer info and delivery details
+- Profit automatically calculated per sale
+- Always know how many tickets are left to sell
+- Mark tickets as sent/not sent for each buyer
+- Status updates automatically: Listed → Pending → Sold
+
+**Example:** Buy 6 tickets for €300, sell 2 for $120, 3 for $195, and 1 for $70. Track each buyer separately, mark deliveries independently, and see your total profit automatically calculated.
+
+### 🔐 Never Lose Track of Your Platform Accounts
+- Store credentials for Ticketmaster, AXS, SeeTickets, StubHub, Viagogo, and more
+- Everything encrypted with military-grade AES-256-GCM encryption
+- Built-in 2FA authenticator - generate codes without switching apps
+- Bulk import multiple accounts at once
+- Organized by platform with tabs for easy access
+
+### 💵 Work in Any Currency
+- Buy in EUR, sell in USD, see profit in GBP - all automatic
+- Supports 14 major currencies with real-time conversion
+- Accurate profit calculations across different currencies
+- No manual calculations needed
+
+### 🤖 Discord Integration
+- Automatic delivery reminders 7 days before events
+- Each buyer gets their own personalized reminder
+- Acknowledge deliveries right from Discord
+- Full API for bot integration
+
+### 🎨 Beautiful, Modern Interface
+- Dark mode by default with smooth transitions
+- Responsive design - works on desktop, tablet, and mobile
+- Fast, intuitive, and built for productivity
+- Clear visual feedback for all operations
 
 ---
 
-## 📦 Quick Start
+## 🛠️ Built With Modern Technology
 
-### Prerequisites
+- **Next.js 15** + **React 19** - Latest web framework
+- **TypeScript** - Type-safe development
+- **PostgreSQL** (Neon) - Serverless database
+- **Prisma** - Type-safe ORM
+- **NextAuth.js v5** - Secure authentication
+- **Tailwind CSS** - Beautiful, responsive design
+- **AES-256-GCM** - Military-grade encryption
 
-- Node.js 18+ and npm
-- A [Neon](https://neon.tech) database account (free tier works great!)
-- Discord Developer Application
+---
 
-### 1. Clone & Install
+## 🚀 Getting Started
+
+Ready to streamline your ticket business?
+
+### Quick Setup
 
 ```bash
 git clone https://github.com/DonkeyXBT/ticketplatform.git
@@ -93,362 +95,106 @@ cd ticketplatform
 npm install
 ```
 
-### 2. Set Up Neon Database
+### Full Setup Instructions
 
-1. Go to https://console.neon.tech/
-2. Create a new project
-3. Copy your connection string
+See **[docs/SETUP.md](./docs/SETUP.md)** for complete installation and configuration guide including:
+- Database setup (Neon PostgreSQL)
+- Discord OAuth configuration
+- Environment variables
+- Deployment to Vercel
 
-### 3. Set Up Discord OAuth
-
-**📖 Detailed guide available in `DISCORD_SETUP.md`**
-
-Quick steps:
-1. Go to https://discord.com/developers/applications
-2. Click "New Application"
-3. Go to OAuth2 → Add redirect URLs:
-   - `http://localhost:3000/api/auth/callback/discord`
-   - `https://your-domain.com/api/auth/callback/discord` (for production)
-4. Copy Client ID and Client Secret
-
-### 4. Configure Environment Variables
-
-Update `.env` with your credentials:
-
-```env
-# Database
-DATABASE_URL="postgresql://user:password@host:5432/dbname?sslmode=require"
-
-# NextAuth
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
-
-# Discord OAuth
-DISCORD_CLIENT_ID="your-discord-client-id"
-DISCORD_CLIENT_SECRET="your-discord-client-secret"
-
-# Encryption Key (for platform accounts)
-ENCRYPTION_KEY="generate-with-openssl-rand-hex-32"
-
-# Discord Bot API (optional)
-BOT_API_KEY="your-bot-api-key"
-```
-
-### 5. Initialize Database
-
-```bash
-npx prisma generate
-npx prisma db push
-```
-
-### 6. Run Development Server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) 🎉
+**Quick Links:**
+- **[Setup Guide](./docs/SETUP.md)** - Complete installation instructions
+- **[Discord OAuth Setup](./docs/DISCORD_SETUP.md)** - Detailed OAuth configuration
 
 ---
 
-## 📚 Core Concepts
+## 🛣️ What's Next
 
-### Ticket Flow
+We're constantly improving the platform. Here's what's coming:
 
-```
-1. Create Ticket (6 tickets, $300 total buy-in)
-   ↓
-2. Add Sale #1 (2 tickets to Buyer A @ $60 each = $120)
-   ↓
-3. Add Sale #2 (3 tickets to Buyer B @ $65 each = $195)
-   ↓
-4. Remaining: 1 ticket
-   Status: Pending (partially sold)
-   ↓
-5. Add Sale #3 (1 ticket to Buyer C @ $70)
-   ↓
-6. Status: Sold (all tickets sold)
-   Total Revenue: $385
-   Total Profit: $85
-```
+### Phase 1: Core Enhancements (Q1 2025)
+- **Profit Analytics Dashboard** - Visual charts, ROI tracking, best-performing events
+- **Bulk Operations** - CSV import/export, batch updates
+- **Mobile PWA** - Native app experience on mobile devices
 
-### Platform Accounts
+### Phase 2: Automation (Q2 2025)
+- **Automated Price Monitoring** - Track market prices, get alerts for profitable opportunities
+- **Marketplace Integration** - Auto-list on StubHub, Viagogo, sync inventory in real-time
+- **Discord Bot Enhancements** - Create tickets via Discord, daily reports, team collaboration
 
-Store credentials for all your ticket platforms:
-- **Encrypted Storage** - Passwords and 2FA keys encrypted with AES-256-GCM
-- **Live Authenticator** - Generate 2FA codes without leaving the app
-- **Bulk Import** - Format: `email:password:2fa_key:phone_number`
+### Phase 3: Intelligence (Q3 2025)
+- **AI Event Recommendations** - Suggest profitable events based on your history
+- **Price Prediction** - ML models to forecast profitability
+- **Fraud Detection** - Protect against scams and suspicious buyers
 
-### Currency Conversion
+### Phase 4: Enterprise (Q4 2025)
+- **Multi-User Accounts** - Team management and collaboration
+- **Financial Reports** - Automated invoicing, tax summaries, expense tracking
+- **API Access** - Build custom integrations
 
-Buy in EUR, sell in USD - profit calculated automatically:
-```
-Buy: 6 tickets @ €50 each = €300
-Sell: 6 tickets @ $65 each = $390
-Profit: ~$65 (after EUR→USD conversion)
-```
+**[See complete roadmap →](./docs/FEATURES.md)**
 
 ---
 
-## 🗂️ Project Structure
+## 💡 Who This Is For
 
-```
-ticketplatform/
-├── app/
-│   ├── (auth)/
-│   │   └── login/              # Login page
-│   ├── (dashboard)/
-│   │   ├── dashboard/          # Main dashboard
-│   │   ├── events/             # Events page
-│   │   └── accounts/           # Platform accounts
-│   ├── api/
-│   │   ├── auth/               # NextAuth routes
-│   │   ├── tickets/            # Ticket CRUD
-│   │   ├── sales/              # Sales management
-│   │   ├── platform-accounts/  # Account CRUD
-│   │   └── bot/                # Discord bot endpoints
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
-├── components/
-│   ├── DashboardClient.tsx     # Main dashboard UI
-│   ├── TicketModal.tsx         # Add/edit tickets
-│   ├── SalesManager.tsx        # Manage sales per ticket
-│   ├── AccountsClient.tsx      # Platform accounts UI
-│   ├── TOTPDisplay.tsx         # 2FA code generator
-│   ├── Navigation.tsx          # Global navigation
-│   └── ThemeProvider.tsx       # Dark mode provider
-├── lib/
-│   ├── auth.ts                 # NextAuth config
-│   ├── prisma.ts               # Prisma client
-│   ├── currency.ts             # Currency conversion
-│   └── encryption.ts           # AES-256-GCM encryption
-├── prisma/
-│   └── schema.prisma           # Database schema
-└── types/
-    └── next-auth.d.ts          # NextAuth types
-```
+- **Professional Ticket Resellers** managing dozens of events per month
+- **Teams** who need to collaborate on ticket inventory
+- **Anyone** tired of spreadsheets and wants a proper business tool
+- **Resellers** working across multiple platforms and currencies
 
 ---
 
-## 🎯 Supported Platforms
+## 🔐 Security & Privacy
 
-### Purchase Platforms
-- Ticketmaster
-- AXS
-- Gigs And Tours
-- SeeTickets
-- Eventim
-- Dice
-- Other (custom)
-
-### Sale Platforms
-- Stubhub
-- Viagogo
-- Ticketmaster Resale
-- AXS Resale
-- Twickets
-- Other (custom)
-
----
-
-## 📊 Database Schema
-
-### Main Models
-
-#### **Ticket**
-Event information and purchase details
-- Event: artist, location, date, section, row, seat
-- Purchase: platform, quantity, buy price, currency
-- Meta: status, order number, email
-
-#### **Sale**
-Individual sales per ticket (one-to-many)
-- Quantity sold to this buyer
-- Sale price and profit
-- Buyer details (name, email)
-- Delivery tracking (sent/not sent)
-- Site sold on
-
-#### **PlatformAccount**
-Encrypted credential storage
-- Platform identifier
-- Encrypted email and password
-- Encrypted 2FA secret key
-- Phone number, notes
-
-#### **User**
-User profile and authentication
-- Discord ID and auth data
-- Preferred currency
-- Linked tickets and accounts
-
----
-
-## 🚢 Deployment
-
-### Deploy to Vercel
-
-**Optimized for Vercel** - Middleware is only 33.8 kB (well under 1 MB limit)
-
-1. Push your code to GitHub
-2. Go to https://vercel.com and import repository
-3. Add environment variables:
-   - `DATABASE_URL`
-   - `NEXTAUTH_URL` (your production domain)
-   - `NEXTAUTH_SECRET`
-   - `DISCORD_CLIENT_ID`
-   - `DISCORD_CLIENT_SECRET`
-   - `ENCRYPTION_KEY`
-   - `BOT_API_KEY` (optional)
-4. Deploy! 🎉
-
-**Don't forget** to add your production URL to Discord OAuth redirect URLs!
-
-### Other Platforms
-
-The app is a standard Next.js 15 application and works with:
-- Netlify
-- Railway
-- Render
-- AWS Amplify
-- Self-hosted with Node.js
-
----
-
-## 🔌 API Endpoints
-
-### Tickets
-- `GET /api/tickets` - List all tickets with sales
-- `POST /api/tickets` - Create ticket
-- `PATCH /api/tickets/[id]` - Update ticket
-- `DELETE /api/tickets/[id]` - Delete ticket
-
-### Sales
-- `GET /api/tickets/[id]/sales` - List sales for ticket
-- `POST /api/tickets/[id]/sales` - Create sale
-- `PATCH /api/sales/[id]` - Update sale
-- `DELETE /api/sales/[id]` - Delete sale
-- `POST /api/sales/[id]/toggle-sent` - Toggle sent status
-
-### Platform Accounts
-- `GET /api/platform-accounts` - List accounts (decrypted)
-- `POST /api/platform-accounts` - Create account (encrypted)
-- `PATCH /api/platform-accounts/[id]` - Update account
-- `DELETE /api/platform-accounts/[id]` - Delete account
-- `POST /api/platform-accounts/bulk` - Bulk import
-
-### Discord Bot
-- `GET /api/bot/tickets-needing-reminders` - Fetch sales needing reminders
-- `POST /api/bot/update-reminder-sent` - Mark reminder as sent
-- `POST /api/bot/acknowledge-delivery` - Acknowledge reminder
-
----
-
-## 🎨 Features in Detail
-
-### Profit Calculator
-
-Automatic profit calculation with currency conversion:
-
-```typescript
-// Buy in EUR, sell in USD
-buyInPrice: €300 (EUR)
-salePrice: $390 (USD)
-
-// Auto-converts USD → EUR for profit
-profit: ~€358 - €300 = €58
-```
-
-### View Modes
-
-- **List View** - Compact table with all info
-- **Card View** - Medium cards with key details
-- **Detailed View** - Large cards with full information
-
-### Quantity Tracking
-
-```
-Total: 6 tickets
-Sold: 5 tickets (via 2 sales)
-Remaining: 1 ticket
-Status: Pending
-```
-
-### Sales Manager
-
-Per-ticket sales interface:
-1. View all sales for a ticket
-2. Add new sale (validates quantity)
-3. Edit/delete existing sales
-4. Toggle sent status per sale
-5. See buyer details and delivery info
-
----
-
-## 🔐 Security Features
-
-- **Password Encryption** - AES-256-GCM with unique IVs
-- **2FA Key Encryption** - Secrets never stored in plain text
-- **User Isolation** - Middleware enforces data separation
-- **HTTPS Only** - Force HTTPS in production
-- **CSRF Protection** - Built into NextAuth.js
-- **SQL Injection Prevention** - Prisma ORM parameterized queries
-
----
-
-## 🛣️ Roadmap
-
-See [FEATURES.md](./FEATURES.md) for the complete list of planned features, including:
-
-- 🔥 Automated price monitoring & alerts
-- 📊 Profit analytics dashboard
-- 📱 Mobile app (PWA)
-- 🤖 Marketplace auto-listing
-- 🧠 AI event recommendations
-- 💼 CRM & buyer management
+Your data security is our priority:
+- All platform credentials encrypted with **AES-256-GCM**
+- 2FA secret keys never stored in plain text
+- Secure Discord OAuth authentication
+- User data isolation - you only see your data
+- HTTPS enforced in production
+- Regular security updates
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please:
+We welcome contributions! Whether it's:
+- Reporting bugs
+- Suggesting features
+- Improving documentation
+- Submitting pull requests
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+**[Open an issue](https://github.com/DonkeyXBT/ticketplatform/issues)** or **[start a discussion](https://github.com/DonkeyXBT/ticketplatform/discussions)**
+
+---
+
+## 📚 Documentation
+
+- **[Setup Guide](./docs/SETUP.md)** - Installation and configuration
+- **[Discord OAuth Setup](./docs/DISCORD_SETUP.md)** - Detailed OAuth guide
+- **[Features Roadmap](./docs/FEATURES.md)** - Upcoming features and timeline
 
 ---
 
 ## 📄 License
 
-ISC License - see [LICENSE](./LICENSE) file for details
+ISC License - Free to use, modify, and distribute. See [LICENSE](./LICENSE) for details.
 
 ---
 
 ## 💬 Support
 
-- **Issues:** [GitHub Issues](https://github.com/DonkeyXBT/ticketplatform/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/DonkeyXBT/ticketplatform/discussions)
-- **Documentation:** See `DISCORD_SETUP.md` for Discord OAuth setup
+Need help or have questions?
+
+- **[GitHub Issues](https://github.com/DonkeyXBT/ticketplatform/issues)** - Report bugs
+- **[GitHub Discussions](https://github.com/DonkeyXBT/ticketplatform/discussions)** - Ask questions, share ideas
 
 ---
 
-## 🙏 Acknowledgments
+**Built for ticket resellers, by ticket resellers**
 
-Built with:
-- [Next.js](https://nextjs.org/) - React framework
-- [Prisma](https://www.prisma.io/) - Database ORM
-- [NextAuth.js](https://next-auth.js.org/) - Authentication
-- [Tailwind CSS](https://tailwindcss.com/) - Styling
-- [Neon](https://neon.tech/) - PostgreSQL database
-- [Lucide](https://lucide.dev/) - Icons
-- [OTPAuth](https://github.com/hectorm/otpauth) - TOTP generation
-
----
-
-**Made with ❤️ for ticket resellers**
+*Making ticket reselling simple, organized, and profitable.*
 
 **Last Updated:** January 2025
