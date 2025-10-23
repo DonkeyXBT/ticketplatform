@@ -15,13 +15,14 @@ export async function GET(req: Request) {
     const sevenDaysFromNow = new Date(now)
     sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
 
-    // Find all sold tickets with event dates within 7 days that haven't been acknowledged
-    const tickets = await prisma.ticket.findMany({
+    // Find all sales for tickets with event dates within 7 days that haven't been acknowledged
+    const sales = await prisma.sale.findMany({
       where: {
-        status: "Sold",
-        eventDate: {
-          gte: now,
-          lte: sevenDaysFromNow,
+        ticket: {
+          eventDate: {
+            gte: now,
+            lte: sevenDaysFromNow,
+          },
         },
         deliveryReminderAcknowledged: false,
         OR: [
@@ -36,36 +37,42 @@ export async function GET(req: Request) {
         ],
       },
       include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            discordId: true,
+        ticket: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                discordId: true,
+              },
+            },
           },
         },
       },
     })
 
-    // Filter out tickets where user doesn't have Discord ID
-    const validTickets = tickets
-      .filter((ticket) => ticket.user.discordId)
-      .map((ticket) => ({
-        id: ticket.id,
-        artist: ticket.artist,
-        location: ticket.location,
-        eventDate: ticket.eventDate,
-        section: ticket.section,
-        row: ticket.row,
-        seat: ticket.seat,
-        deliveryName: ticket.deliveryName,
-        deliveryEmail: ticket.deliveryEmail,
-        discordId: ticket.user.discordId,
-        userName: ticket.user.name,
+    // Filter out sales where user doesn't have Discord ID
+    const validSales = sales
+      .filter((sale) => sale.ticket.user.discordId)
+      .map((sale) => ({
+        id: sale.id,
+        ticketId: sale.ticketId,
+        artist: sale.ticket.artist,
+        location: sale.ticket.location,
+        eventDate: sale.ticket.eventDate,
+        section: sale.ticket.section,
+        row: sale.ticket.row,
+        seat: sale.ticket.seat,
+        quantitySold: sale.quantitySold,
+        deliveryName: sale.deliveryName,
+        deliveryEmail: sale.deliveryEmail,
+        discordId: sale.ticket.user.discordId,
+        userName: sale.ticket.user.name,
       }))
 
     return NextResponse.json({
-      tickets: validTickets,
-      count: validTickets.length,
+      tickets: validSales,
+      count: validSales.length,
     })
   } catch (error) {
     console.error("Error fetching tickets needing reminders:", error)

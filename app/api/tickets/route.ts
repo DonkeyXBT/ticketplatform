@@ -13,12 +13,31 @@ export async function GET() {
     where: {
       userId: session.user.id,
     },
+    include: {
+      sales: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
     orderBy: {
       createdAt: "desc",
     },
   })
 
-  return NextResponse.json(tickets)
+  // Add computed fields for each ticket
+  const ticketsWithComputed = tickets.map((ticket) => {
+    const totalSold = ticket.sales.reduce((sum, sale) => sum + sale.quantitySold, 0)
+    const remainingQuantity = ticket.quantity - totalSold
+
+    return {
+      ...ticket,
+      totalSold,
+      remainingQuantity,
+    }
+  })
+
+  return NextResponse.json(ticketsWithComputed)
 }
 
 export async function POST(req: Request) {

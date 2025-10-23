@@ -10,38 +10,46 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
-    const { ticketId, discordUserId } = body
+    const { saleId, ticketId, discordUserId } = body
 
-    if (!ticketId || !discordUserId) {
+    // Support both saleId (new) and ticketId (legacy)
+    const id = saleId || ticketId
+    if (!id || !discordUserId) {
       return NextResponse.json(
-        { error: "ticketId and discordUserId are required" },
+        { error: "saleId/ticketId and discordUserId are required" },
         { status: 400 }
       )
     }
 
-    // Find the ticket and verify it belongs to the Discord user
-    const ticket = await prisma.ticket.findFirst({
+    // Find the sale and verify it belongs to the Discord user
+    const sale = await prisma.sale.findFirst({
       where: {
-        id: ticketId,
-        user: {
-          discordId: discordUserId,
+        id,
+        ticket: {
+          user: {
+            discordId: discordUserId,
+          },
         },
       },
       include: {
-        user: true,
+        ticket: {
+          include: {
+            user: true,
+          },
+        },
       },
     })
 
-    if (!ticket) {
+    if (!sale) {
       return NextResponse.json(
-        { error: "Ticket not found or doesn't belong to this user" },
+        { error: "Sale not found or doesn't belong to this user" },
         { status: 404 }
       )
     }
 
-    // Update ticket to mark delivery as acknowledged
-    const updatedTicket = await prisma.ticket.update({
-      where: { id: ticketId },
+    // Update sale to mark delivery as acknowledged
+    const updatedSale = await prisma.sale.update({
+      where: { id },
       data: {
         deliveryReminderAcknowledged: true,
       },
@@ -49,9 +57,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      ticket: {
-        id: updatedTicket.id,
-        acknowledged: updatedTicket.deliveryReminderAcknowledged,
+      sale: {
+        id: updatedSale.id,
+        acknowledged: updatedSale.deliveryReminderAcknowledged,
       },
     })
   } catch (error) {

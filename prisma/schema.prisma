@@ -96,12 +96,39 @@ model Ticket {
   createdAt                   DateTime  @default(now())
   updatedAt                   DateTime  @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sales Sale[]
 
   @@index([userId])
   @@index([platform])
   @@index([status])
   @@index([eventDate])
+}
+
+model Sale {
+  id                           String    @id @default(cuid())
+  ticketId                     String
+  quantitySold                 Int
+  salePrice                    Float?
+  sellCurrency                 String?   @default("USD")
+  profit                       Float?
+  profitCurrency               String?   @default("USD")
+  saleId                       String?
+  siteSold                     String?
+  deliveryEmail                String?
+  deliveryName                 String?
+  deliveryReminderSent         Boolean   @default(false)
+  deliveryReminderAcknowledged Boolean   @default(false)
+  lastReminderSentAt           DateTime?
+  discordMessageId             String?
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @updatedAt
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([siteSold])
+  @@index([deliveryReminderSent])
 }
 
 model PlatformAccount {

@@ -10,18 +10,20 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
-    const { ticketId, messageId } = body
+    const { saleId, ticketId, messageId } = body
 
-    if (!ticketId) {
+    // Support both saleId (new) and ticketId (legacy)
+    const id = saleId || ticketId
+    if (!id) {
       return NextResponse.json(
-        { error: "ticketId is required" },
+        { error: "saleId or ticketId is required" },
         { status: 400 }
       )
     }
 
-    // Update ticket with reminder info
-    const updatedTicket = await prisma.ticket.update({
-      where: { id: ticketId },
+    // Update sale with reminder info
+    const updatedSale = await prisma.sale.update({
+      where: { id },
       data: {
         deliveryReminderSent: true,
         lastReminderSentAt: new Date(),
@@ -31,10 +33,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      ticket: {
-        id: updatedTicket.id,
-        reminderSent: updatedTicket.deliveryReminderSent,
-        lastReminderSentAt: updatedTicket.lastReminderSentAt,
+      sale: {
+        id: updatedSale.id,
+        reminderSent: updatedSale.deliveryReminderSent,
+        lastReminderSentAt: updatedSale.lastReminderSentAt,
       },
     })
   } catch (error) {
