@@ -39,12 +39,16 @@ The app matches the web platform's design with:
 
 **Want to get started fast?**
 
-### Development Setup
-- **[QUICK_START.md](./QUICK_START.md)** - 5-minute setup (local testing)
-- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete walkthrough with explanations
+### ⚡ Instant Setup (Recommended)
+- **[INSTANT_SETUP.md](./INSTANT_SETUP.md)** - Get running in 3 minutes! Just `npm run dev` and go!
+
+### Detailed Guides
+- **[QUICK_START.md](./QUICK_START.md)** - 5-minute setup walkthrough
+- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete step-by-step guide
+- **[CHECKLIST.md](./CHECKLIST.md)** - Printable checklist
 
 ### Production Deployment
-- **[PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md)** - Deploy to TestFlight & App Store with Vercel backend
+- **[PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md)** - Deploy to TestFlight & App Store
 
 ---
 

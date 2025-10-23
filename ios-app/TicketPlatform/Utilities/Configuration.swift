@@ -2,51 +2,30 @@
 //  Configuration.swift
 //  TicketPlatform
 //
-//  Environment configuration for different deployment environments
+//  Simple configuration - defaults to localhost for easy testing
 //
 
 import Foundation
 
-enum Environment {
-    case development
-    case production
-
-    static var current: Environment {
-        #if DEBUG
-        return .development
-        #else
-        return .production
-        #endif
-    }
-}
-
 struct Configuration {
 
-    // MARK: - API Configuration
-
-    /// Base URL for API requests
-    /// Priority:
-    /// 1. Environment variable API_BASE_URL (set in Xcode scheme)
-    /// 2. Build configuration (Debug vs Release)
+    /// API Base URL - connects to your Next.js backend
+    /// The backend then connects to your Neon database
+    ///
+    /// IMPORTANT: iOS apps cannot connect directly to PostgreSQL!
+    /// They must go through an API (your Next.js backend)
+    ///
+    /// Default: localhost:3000
+    /// Just run "npm run dev" in your backend and this will work!
     static var apiBaseURL: String {
-        // First check for environment variable (allows override)
+        // Use environment variable if set, otherwise localhost
         if let envURL = ProcessInfo.processInfo.environment["API_BASE_URL"] {
             return envURL
         }
 
-        // Fall back to build configuration
-        switch Environment.current {
-        case .development:
-            // For development, use this default
-            // IMPORTANT: Replace with your Mac's IP address!
-            // Find it with: ifconfig | grep "inet " | grep -v 127.0.0.1
-            return "http://192.168.1.100:3000"
-
-        case .production:
-            // For production builds (TestFlight, App Store)
-            // Replace with your Vercel deployment URL
-            return "https://ticketplatform.vercel.app"
-        }
+        // Default to localhost for easy local testing
+        // Your backend running "npm run dev" will be at localhost:3000
+        return "http://localhost:3000"
     }
 
     // MARK: - App Information
@@ -67,65 +46,36 @@ struct Configuration {
         #endif
     }
 
-    // MARK: - Helper Methods
+    // MARK: - Debug Logging
 
-    /// Print current configuration (useful for debugging)
     static func printConfiguration() {
         print("""
         ========================================
-        📱 Ticket Platform Configuration
+        📱 Ticket Platform
         ========================================
-        Environment: \(Environment.current == .development ? "Development" : "Production")
-        API Base URL: \(apiBaseURL)
-        App Version: \(appVersion) (\(buildNumber))
-        Debug Mode: \(isDebug)
+        API URL: \(apiBaseURL)
+        Version: \(appVersion) (\(buildNumber))
+        ========================================
+
+        ⚠️  Make sure your backend is running:
+        cd ticketplatform && npm run dev
         ========================================
         """)
     }
 }
 
-// MARK: - How to Configure
-
 /*
 
- ## Development Setup (Local Testing)
+ HOW THIS WORKS:
 
- 1. Update the development URL in this file:
-    - Find your Mac's IP: ifconfig | grep "inet " | grep -v 127.0.0.1
-    - Update line 32: return "http://YOUR_MAC_IP:3000"
+ iOS App → http://localhost:3000 → Next.js API → Neon Database
 
- 2. Make sure backend is running:
-    cd ticketplatform
-    npm run dev
+ Setup:
+ 1. In terminal: cd ticketplatform && npm run dev
+ 2. In Xcode: Press Cmd+R to run the app
+ 3. App connects to localhost:3000 automatically!
 
- 3. Run the app in Xcode (Debug configuration is default)
-
-
- ## Production Setup (TestFlight/App Store)
-
- 1. Update the production URL in this file:
-    - Update line 39: return "https://your-domain.vercel.app"
-
- 2. Archive the app:
-    - Product → Archive
-    - This automatically uses Release configuration
-
-
- ## Environment Variable Override (Optional)
-
- You can override the URL without changing code:
-
- 1. In Xcode: Product → Scheme → Edit Scheme
- 2. Select "Run" on the left
- 3. Go to "Arguments" tab
- 4. Under "Environment Variables", click +
- 5. Add:
-    Name: API_BASE_URL
-    Value: http://your-custom-url:3000
-
- This is useful for:
- - Testing against staging server
- - Using a different local IP
- - Testing production API from simulator
+ The backend handles all database communication.
+ iOS app just makes HTTP requests to the API.
 
  */
