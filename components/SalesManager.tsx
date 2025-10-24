@@ -93,8 +93,8 @@ export default function SalesManager({ ticket, onClose }: SalesManagerProps) {
     }
   }
 
-  const totalSold = sales.reduce((sum, sale) => sum + sale.quantitySold, 0)
-  const remainingQuantity = ticket.quantity - totalSold
+  const totalSold = sales.reduce((sum, sale) => sum + (Number(sale.quantitySold) || 0), 0)
+  const remainingQuantity = Number(ticket.quantity) - totalSold
 
   const handleAddSale = async (e: React.FormEvent) => {
     e.preventDefault()

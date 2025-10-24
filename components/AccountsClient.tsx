@@ -265,7 +265,17 @@ export default function AccountsClient({ user }: { user: User }) {
   const filteredAccounts = accounts.filter((a) => a.platform === selectedPlatform)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 relative overflow-hidden">
+      {/* Animated Background Grid */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_110%)] pointer-events-none"></div>
+
+      {/* Animated Gradient Orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
       <Navigation
         user={user}
         displayCurrency={displayCurrency}
@@ -274,13 +284,13 @@ export default function AccountsClient({ user }: { user: User }) {
         onViewModeChange={(mode) => handleViewModeChange(mode === "card" ? "card" : "list")}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 dark:from-indigo-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-black bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 bg-clip-text text-transparent mb-2">
             Platform Accounts
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 font-medium">
+          <p className="text-white/80 font-medium">
             Securely manage your ticket platform credentials
           </p>
         </div>
@@ -290,14 +300,14 @@ export default function AccountsClient({ user }: { user: User }) {
           <div className="flex gap-3">
             <button
               onClick={() => openModal()}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl font-bold hover:scale-105"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 text-white rounded-xl hover:from-blue-700 hover:via-blue-600 hover:to-cyan-700 transition-all duration-300 shadow-lg hover:shadow-xl font-bold hover:scale-105"
             >
               <Plus className="h-5 w-5" />
               Add Account
             </button>
             <button
               onClick={() => setIsBulkModalOpen(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all duration-200 font-bold hover:scale-105"
+              className="flex items-center gap-2 px-6 py-3 glass text-white rounded-xl hover:glass-strong transition-all duration-200 font-bold hover:scale-105"
             >
               <Upload className="h-5 w-5" />
               Bulk Import
@@ -305,13 +315,13 @@ export default function AccountsClient({ user }: { user: User }) {
           </div>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center bg-white dark:bg-slate-800 border-2 border-indigo-200 dark:border-slate-600 rounded-xl p-1 shadow-sm">
+          <div className="flex items-center glass rounded-xl p-1 shadow-sm">
             <button
               onClick={() => handleViewModeChange("list")}
               className={`p-2.5 rounded-lg transition-all duration-300 ${
                 viewMode === "list"
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
+                  ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
+                  : "text-white/70 hover:bg-slate-100 dark:hover:bg-slate-700"
               }`}
               title="List View"
             >
@@ -321,8 +331,8 @@ export default function AccountsClient({ user }: { user: User }) {
               onClick={() => handleViewModeChange("card")}
               className={`p-2.5 rounded-lg transition-all duration-300 ${
                 viewMode === "card"
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
+                  ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
+                  : "text-white/70 hover:bg-slate-100 dark:hover:bg-slate-700"
               }`}
               title="Card View"
             >
@@ -332,8 +342,8 @@ export default function AccountsClient({ user }: { user: User }) {
               onClick={() => handleViewModeChange("detailed")}
               className={`p-2.5 rounded-lg transition-all duration-300 ${
                 viewMode === "detailed"
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
+                  ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
+                  : "text-white/70 hover:bg-slate-100 dark:hover:bg-slate-700"
               }`}
               title="Detailed View"
             >
@@ -353,8 +363,8 @@ export default function AccountsClient({ user }: { user: User }) {
                   onClick={() => setSelectedPlatform(platform)}
                   className={`px-6 py-3 rounded-xl font-bold transition-all duration-200 whitespace-nowrap ${
                     selectedPlatform === platform
-                      ? "bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white shadow-lg"
-                      : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-700 border-2 border-slate-200 dark:border-slate-600"
+                      ? "bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 text-white shadow-lg"
+                      : "glass text-white hover:glass-strong border-2 border-white/10"
                   }`}
                 >
                   {platform} {count > 0 && `(${count})`}
@@ -366,9 +376,9 @@ export default function AccountsClient({ user }: { user: User }) {
 
         {/* Accounts List */}
         {filteredAccounts.length === 0 ? (
-          <div className="bg-white dark:bg-slate-800 rounded-2xl p-12 text-center border-2 border-slate-200 dark:border-slate-700">
+          <div className="glass rounded-2xl p-12 text-center border-2 border-white/10">
             <Shield className="h-16 w-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-            <p className="text-xl font-bold text-slate-600 dark:text-slate-400 mb-2">
+            <p className="text-xl font-bold text-white/70 mb-2">
               No accounts for {selectedPlatform}
             </p>
             <p className="text-slate-500 dark:text-slate-500 mb-6">
@@ -376,44 +386,44 @@ export default function AccountsClient({ user }: { user: User }) {
             </p>
             <button
               onClick={() => openModal()}
-              className="px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl font-bold hover:scale-105 transition-transform"
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 text-white rounded-xl font-bold hover:scale-105 transition-transform"
             >
               Add Account
             </button>
           </div>
         ) : viewMode === "list" ? (
           /* List View - Compact Table */
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border-2 border-slate-200 dark:border-slate-700 overflow-hidden">
+          <div className="glass rounded-2xl border-2 border-white/10 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700">
+                <thead className="bg-gradient-to-r from-slate-800/50 to-slate-800/30 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-black text-white uppercase tracking-wider">
                       Email
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-black text-white uppercase tracking-wider">
                       Password
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-black text-white uppercase tracking-wider">
                       2FA
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-black text-white uppercase tracking-wider">
                       Phone
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-right text-xs font-black text-white uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                   {filteredAccounts.map((account) => (
-                    <tr key={account.id} className="hover:bg-indigo-50 dark:hover:bg-slate-700/50 transition-colors">
+                    <tr key={account.id} className="hover:glass-strong/50 transition-colors">
                       <td className="px-4 py-3">
-                        <span className="text-sm font-bold text-slate-900 dark:text-white">{account.email}</span>
+                        <span className="text-sm font-bold text-white">{account.email}</span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <code className="text-xs font-mono text-slate-700 dark:text-slate-300">
+                          <code className="text-xs font-mono text-white">
                             {showPassword[account.id] ? account.password : "••••••••"}
                           </code>
                           <button
@@ -466,7 +476,7 @@ export default function AccountsClient({ user }: { user: User }) {
                         )}
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs text-slate-600 dark:text-slate-400">
+                        <span className="text-xs text-white/70">
                           {account.telephoneNumber || "—"}
                         </span>
                       </td>
@@ -498,15 +508,15 @@ export default function AccountsClient({ user }: { user: User }) {
             {filteredAccounts.map((account) => (
               <div
                 key={account.id}
-                className="bg-white dark:bg-slate-800 rounded-3xl p-8 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all shadow-lg hover:shadow-2xl"
+                className="glass rounded-3xl p-8 border-2 border-white/10 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all shadow-lg hover:shadow-2xl"
               >
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">
+                    <h2 className="text-2xl font-black text-white mb-3">
                       {account.email}
                     </h2>
                     {account.telephoneNumber && (
-                      <p className="text-base text-slate-600 dark:text-slate-400 font-bold">
+                      <p className="text-base text-white/70 font-bold">
                         📱 {account.telephoneNumber}
                       </p>
                     )}
@@ -530,10 +540,10 @@ export default function AccountsClient({ user }: { user: User }) {
                 <div className="space-y-4">
                   {/* Password */}
                   <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-700/50 p-5 rounded-2xl">
-                    <span className="text-base font-black text-slate-700 dark:text-slate-300 w-32">
+                    <span className="text-base font-black text-white w-32">
                       Password:
                     </span>
-                    <code className="flex-1 text-base font-mono font-bold text-slate-900 dark:text-white">
+                    <code className="flex-1 text-base font-mono font-bold text-white">
                       {showPassword[account.id] ? account.password : "••••••••••••"}
                     </code>
                     <button
@@ -582,7 +592,7 @@ export default function AccountsClient({ user }: { user: User }) {
 
                   {/* Notes */}
                   {account.notes && (
-                    <div className="text-base text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 p-5 rounded-2xl">
+                    <div className="text-base text-white/70 bg-slate-50 dark:bg-slate-700/50 p-5 rounded-2xl">
                       <span className="font-black">Notes: </span>
                       {account.notes}
                     </div>
@@ -597,15 +607,15 @@ export default function AccountsClient({ user }: { user: User }) {
             {filteredAccounts.map((account) => (
               <div
                 key={account.id}
-                className="bg-white dark:bg-slate-800 rounded-2xl p-6 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all shadow-sm hover:shadow-lg"
+                className="glass rounded-2xl p-6 border-2 border-white/10 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all shadow-sm hover:shadow-lg"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-black text-slate-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-black text-white mb-2">
                       {account.email}
                     </h3>
                     {account.telephoneNumber && (
-                      <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+                      <p className="text-sm text-white/70 font-medium">
                         📱 {account.telephoneNumber}
                       </p>
                     )}
@@ -629,10 +639,10 @@ export default function AccountsClient({ user }: { user: User }) {
                 <div className="space-y-3">
                   {/* Password */}
                   <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-xl">
-                    <span className="text-sm font-bold text-slate-600 dark:text-slate-400 w-24">
+                    <span className="text-sm font-bold text-white/70 w-24">
                       Password:
                     </span>
-                    <code className="flex-1 text-sm font-mono text-slate-900 dark:text-white">
+                    <code className="flex-1 text-sm font-mono text-white">
                       {showPassword[account.id] ? account.password : "••••••••••"}
                     </code>
                     <button
@@ -681,7 +691,7 @@ export default function AccountsClient({ user }: { user: User }) {
 
                   {/* Notes */}
                   {account.notes && (
-                    <div className="text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-xl">
+                    <div className="text-sm text-white/70 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-xl">
                       <span className="font-bold">Notes: </span>
                       {account.notes}
                     </div>
@@ -696,9 +706,9 @@ export default function AccountsClient({ user }: { user: User }) {
       {/* Add/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-indigo-100 dark:border-slate-700 animate-scaleIn">
-            <div className="sticky top-0 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700 px-6 py-5 flex items-center justify-between backdrop-blur-sm z-10">
-              <h2 className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+          <div className="glass rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-indigo-100 dark:border-slate-700 animate-scaleIn">
+            <div className="sticky top-0 bg-gradient-to-r from-slate-800/50 to-slate-800/30 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700 px-6 py-5 flex items-center justify-between backdrop-blur-sm z-10">
+              <h2 className="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
                 {editingAccount ? "Edit Account" : "Add New Account"}
               </h2>
               <button
@@ -712,13 +722,13 @@ export default function AccountsClient({ user }: { user: User }) {
             <form onSubmit={handleSubmit} className="p-8">
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                  <label className="block text-sm font-bold text-white mb-2">
                     Platform
                   </label>
                   <select
                     value={formData.platform}
                     onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
-                    className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-700"
+                    className="w-full px-4 py-2.5 border-2 border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-white font-bold bg-white/5"
                     required
                   >
                     {PLATFORMS.map((platform) => (
@@ -730,48 +740,48 @@ export default function AccountsClient({ user }: { user: User }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                  <label className="block text-sm font-bold text-white mb-2">
                     Email
                   </label>
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700"
+                    className="w-full px-4 py-2.5 border-2 border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-white font-medium bg-white/5"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                  <label className="block text-sm font-bold text-white mb-2">
                     Password
                   </label>
                   <input
                     type="text"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700"
+                    className="w-full px-4 py-2.5 border-2 border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-white font-medium bg-white/5"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                  <label className="block text-sm font-bold text-white mb-2">
                     2FA Secret Key (Optional)
                   </label>
                   <input
                     type="text"
                     value={formData.twoFA}
                     onChange={(e) => setFormData({ ...formData, twoFA: e.target.value })}
-                    className="w-full px-4 py-2.5 border-2 border-amber-200 dark:border-amber-800 rounded-xl focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 focus:border-amber-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-amber-50 dark:bg-amber-900/20"
+                    className="w-full px-4 py-2.5 border-2 border-amber-200 dark:border-amber-800 rounded-xl focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 focus:border-amber-500 transition-all text-white font-medium bg-amber-50 dark:bg-amber-900/20"
                     placeholder="Enter 2FA secret key for authenticator app"
                   />
-                  <p className="mt-2 text-xs text-slate-600 dark:text-slate-400">
+                  <p className="mt-2 text-xs text-white/70">
                     This is the secret key used to generate 2FA codes. Scan the QR code below with your authenticator app.
                   </p>
                   {qrCodeUrl && (
-                    <div className="mt-4 p-4 bg-white dark:bg-slate-700 rounded-xl border-2 border-amber-200 dark:border-amber-800 text-center">
-                      <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">
+                    <div className="mt-4 p-4 bg-white/5 rounded-xl border-2 border-amber-200 dark:border-amber-800 text-center">
+                      <p className="text-sm font-bold text-white mb-3">
                         Scan with authenticator app:
                       </p>
                       <img src={qrCodeUrl} alt="2FA QR Code" className="mx-auto rounded-lg" />
@@ -780,43 +790,43 @@ export default function AccountsClient({ user }: { user: User }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                  <label className="block text-sm font-bold text-white mb-2">
                     Phone Number (Optional)
                   </label>
                   <input
                     type="tel"
                     value={formData.telephoneNumber}
                     onChange={(e) => setFormData({ ...formData, telephoneNumber: e.target.value })}
-                    className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700"
+                    className="w-full px-4 py-2.5 border-2 border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-white font-medium bg-white/5"
                     placeholder="+1 234 567 8900"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                  <label className="block text-sm font-bold text-white mb-2">
                     Notes (Optional)
                   </label>
                   <textarea
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-medium bg-white dark:bg-slate-700"
+                    className="w-full px-4 py-2.5 border-2 border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-white font-medium bg-white/5"
                     rows={3}
                     placeholder="Any additional notes about this account..."
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end space-x-4 mt-8 pt-6 border-t-2 border-slate-200 dark:border-slate-700">
+              <div className="flex items-center justify-end space-x-4 mt-8 pt-6 border-t-2 border-white/10">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-8 py-3 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105"
+                  className="px-8 py-3 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-white font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-8 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl font-bold hover:scale-105"
+                  className="px-8 py-3 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 text-white rounded-xl hover:from-blue-700 hover:via-blue-600 hover:to-cyan-700 transition-all duration-300 shadow-lg hover:shadow-xl font-bold hover:scale-105"
                 >
                   {editingAccount ? "Update Account" : "Add Account"}
                 </button>
@@ -829,9 +839,9 @@ export default function AccountsClient({ user }: { user: User }) {
       {/* Bulk Import Modal */}
       {isBulkModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl max-w-2xl w-full border-2 border-indigo-100 dark:border-slate-700 animate-scaleIn">
-            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700 px-6 py-5 flex items-center justify-between">
-              <h2 className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+          <div className="glass rounded-3xl shadow-2xl max-w-2xl w-full border-2 border-indigo-100 dark:border-slate-700 animate-scaleIn">
+            <div className="bg-gradient-to-r from-slate-800/50 to-slate-800/30 dark:from-slate-900 dark:to-slate-800 border-b-2 border-indigo-100 dark:border-slate-700 px-6 py-5 flex items-center justify-between">
+              <h2 className="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
                 Bulk Import Accounts
               </h2>
               <button
@@ -847,13 +857,13 @@ export default function AccountsClient({ user }: { user: User }) {
 
             <div className="p-8">
               <div className="mb-4">
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-sm font-bold text-white mb-2">
                   Platform for all accounts
                 </label>
                 <select
                   value={selectedPlatform}
                   onChange={(e) => setSelectedPlatform(e.target.value)}
-                  className="w-full px-4 py-2.5 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-bold bg-white dark:bg-slate-700"
+                  className="w-full px-4 py-2.5 border-2 border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-white font-bold bg-white/5"
                 >
                   {PLATFORMS.map((platform) => (
                     <option key={platform} value={platform}>
@@ -864,17 +874,17 @@ export default function AccountsClient({ user }: { user: User }) {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-sm font-bold text-white mb-2">
                   Account Data
                 </label>
                 <textarea
                   value={bulkText}
                   onChange={(e) => setBulkText(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-slate-700 dark:text-slate-200 font-mono text-sm bg-white dark:bg-slate-700"
+                  className="w-full px-4 py-3 border-2 border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all text-white font-mono text-sm bg-white/5"
                   rows={12}
                   placeholder="email:password:2fa:phone&#10;example@mail.com:pass123:ABC123XYZ:+1234567890&#10;another@mail.com:pass456:DEF456UVW:+0987654321"
                 />
-                <p className="mt-2 text-xs text-slate-600 dark:text-slate-400">
+                <p className="mt-2 text-xs text-white/70">
                   Format: <code className="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">email:password:2fa:phone</code>
                   <br />
                   One account per line. 2FA and phone are optional (leave empty with :).
@@ -887,13 +897,13 @@ export default function AccountsClient({ user }: { user: User }) {
                     setIsBulkModalOpen(false)
                     setBulkText("")
                   }}
-                  className="px-8 py-3 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105"
+                  className="px-8 py-3 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-white font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleBulkImport}
-                  className="px-8 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl font-bold hover:scale-105"
+                  className="px-8 py-3 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 text-white rounded-xl hover:from-blue-700 hover:via-blue-600 hover:to-cyan-700 transition-all duration-300 shadow-lg hover:shadow-xl font-bold hover:scale-105"
                 >
                   Import Accounts
                 </button>

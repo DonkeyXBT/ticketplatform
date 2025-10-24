@@ -42,16 +42,16 @@ export default function Navigation({
   const { theme = "light", toggleTheme } = useTheme()
 
   return (
-    <header className="relative z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-indigo-100 dark:border-slate-700 animate-slideDown">
+    <header className="relative z-10 glass shadow-lg border-b border-white/10 animate-slideDown">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <div className="flex justify-between items-center">
           {/* Left side - Logo and Navigation */}
           <div className="flex items-center space-x-6 animate-slideUp">
             <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-3 rounded-xl shadow-lg animate-float">
+              <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 p-3 rounded-xl shadow-lg animate-float">
                 <Ticket className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                 Ticket Platform
               </h1>
             </div>
@@ -62,8 +62,8 @@ export default function Navigation({
                 href="/dashboard"
                 className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
                   pathname === "/dashboard"
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                    : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
+                    : "text-white/90 hover:bg-white/10"
                 }`}
               >
                 <LayoutGrid className="h-4 w-4" />
@@ -73,8 +73,8 @@ export default function Navigation({
                 href="/events"
                 className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
                   pathname === "/events"
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                    : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
+                    : "text-white/90 hover:bg-white/10"
                 }`}
               >
                 <Calendar className="h-4 w-4" />
@@ -84,8 +84,8 @@ export default function Navigation({
                 href="/accounts"
                 className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
                   pathname === "/accounts"
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                    : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
+                    : "text-white/90 hover:bg-white/10"
                 }`}
               >
                 <Shield className="h-4 w-4" />
@@ -103,7 +103,7 @@ export default function Navigation({
                   onClick={() => onViewModeChange("card")}
                   className={`p-2 rounded-lg transition-all duration-300 ${
                     viewMode === "card"
-                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                      ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
                       : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                   title="Card View"
@@ -114,7 +114,7 @@ export default function Navigation({
                   onClick={() => onViewModeChange("list")}
                   className={`p-2 rounded-lg transition-all duration-300 ${
                     viewMode === "list"
-                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                      ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
                       : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
                   }`}
                   title="List View"
@@ -182,8 +182,8 @@ export default function Navigation({
             href="/dashboard"
             className={`flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
               pathname === "/dashboard"
-                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-600"
+                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
+                : "text-white/90 hover:bg-white/10 border border-slate-300 dark:border-slate-600"
             }`}
           >
             <LayoutGrid className="h-4 w-4" />
@@ -193,8 +193,8 @@ export default function Navigation({
             href="/events"
             className={`flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
               pathname === "/events"
-                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-600"
+                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
+                : "text-white/90 hover:bg-white/10 border border-slate-300 dark:border-slate-600"
             }`}
           >
             <Calendar className="h-4 w-4" />
@@ -204,8 +204,8 @@ export default function Navigation({
             href="/accounts"
             className={`flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
               pathname === "/accounts"
-                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
-                : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-600"
+                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
+                : "text-white/90 hover:bg-white/10 border border-slate-300 dark:border-slate-600"
             }`}
           >
             <Shield className="h-4 w-4" />

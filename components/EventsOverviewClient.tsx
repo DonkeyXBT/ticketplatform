@@ -185,9 +185,16 @@ export default function EventsOverviewClient({
   }, [eventGroups])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      {/* Background Pattern */}
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] pointer-events-none"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 relative overflow-hidden">
+      {/* Animated Background Grid */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_110%)] pointer-events-none"></div>
+
+      {/* Animated Gradient Orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
 
       {/* Navigation */}
       <Navigation
@@ -199,29 +206,29 @@ export default function EventsOverviewClient({
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Overall Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-purple-100 dark:border-purple-900/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn">
+          <div className="group glass rounded-2xl shadow-lg p-6 border border-white/10 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                <p className="text-sm font-bold text-white/70 uppercase tracking-wide">
                   Total Events
                 </p>
-                <p className="text-4xl font-black text-slate-900 dark:text-white mt-2">
+                <p className="text-4xl font-black text-white mt-2">
                   {overallStats.totalEvents}
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-4 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+              <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-4 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
                 <Calendar className="h-7 w-7 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-blue-100 dark:border-blue-900/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn animation-delay-100">
+          <div className="group glass rounded-2xl shadow-lg p-6 border border-white/10 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn animation-delay-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                <p className="text-sm font-bold text-white/70 uppercase tracking-wide">
                   Total Tickets
                 </p>
-                <p className="text-4xl font-black text-slate-900 dark:text-white mt-2">
+                <p className="text-4xl font-black text-white mt-2">
                   {overallStats.totalTickets}
                 </p>
               </div>
@@ -231,10 +238,10 @@ export default function EventsOverviewClient({
             </div>
           </div>
 
-          <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-emerald-100 dark:border-emerald-900/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn animation-delay-200">
+          <div className="group glass rounded-2xl shadow-lg p-6 border border-white/10 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn animation-delay-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                <p className="text-sm font-bold text-white/70 uppercase tracking-wide">
                   Total Revenue
                 </p>
                 <p className="text-4xl font-black text-emerald-600 dark:text-emerald-400 mt-2">
@@ -247,10 +254,10 @@ export default function EventsOverviewClient({
             </div>
           </div>
 
-          <div className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-rose-100 dark:border-rose-900/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn animation-delay-300">
+          <div className="group glass rounded-2xl shadow-lg p-6 border border-rose-100 dark:border-rose-900/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 animate-scaleIn animation-delay-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                <p className="text-sm font-bold text-white/70 uppercase tracking-wide">
                   Total Profit
                 </p>
                 <p className={`text-4xl font-black mt-2 ${overallStats.totalProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
@@ -266,12 +273,12 @@ export default function EventsOverviewClient({
 
         {/* Events List */}
         {eventGroups.length === 0 ? (
-          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg p-12 text-center border border-slate-200 dark:border-slate-700">
+          <div className="glass rounded-2xl shadow-lg p-12 text-center border border-white/10">
             <Calendar className="h-16 w-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-2">
               No Events Yet
             </h3>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-white/70">
               Add tickets to see your events overview
             </p>
             <Link
@@ -291,7 +298,7 @@ export default function EventsOverviewClient({
               return (
                 <div
                   key={event.key}
-                  className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 hover:shadow-2xl transition-all duration-300 overflow-hidden animate-scaleIn"
+                  className="glass rounded-2xl shadow-lg border border-white/10 hover:shadow-2xl transition-all duration-300 overflow-hidden animate-scaleIn"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   {/* Event Header */}
@@ -302,7 +309,7 @@ export default function EventsOverviewClient({
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-3">
-                          <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+                          <h3 className="text-2xl font-black text-white">
                             {event.artist}
                           </h3>
                           {isPastEvent && (
@@ -312,7 +319,7 @@ export default function EventsOverviewClient({
                           )}
                         </div>
                         <div className="flex flex-wrap gap-4 mb-4">
-                          <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-400">
+                          <div className="flex items-center space-x-2 text-white/70">
                             <Calendar className="h-4 w-4" />
                             <span className="font-semibold">
                               {event.eventDate
@@ -320,7 +327,7 @@ export default function EventsOverviewClient({
                                 : "Date TBD"}
                             </span>
                           </div>
-                          <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-400">
+                          <div className="flex items-center space-x-2 text-white/70">
                             <MapPin className="h-4 w-4" />
                             <span className="font-semibold">{event.location}</span>
                           </div>
@@ -329,15 +336,15 @@ export default function EventsOverviewClient({
                         {/* Event Stats */}
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-800">
-                            <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase">
+                            <p className="text-xs font-bold text-white/70 uppercase">
                               Tickets
                             </p>
-                            <p className="text-2xl font-black text-slate-900 dark:text-white">
+                            <p className="text-2xl font-black text-white">
                               {event.totalTickets}
                             </p>
                           </div>
                           <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 p-3 rounded-xl border border-emerald-100 dark:border-emerald-800">
-                            <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase">
+                            <p className="text-xs font-bold text-white/70 uppercase">
                               Sold
                             </p>
                             <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
@@ -345,7 +352,7 @@ export default function EventsOverviewClient({
                             </p>
                           </div>
                           <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 p-3 rounded-xl border border-amber-100 dark:border-amber-800">
-                            <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase">
+                            <p className="text-xs font-bold text-white/70 uppercase">
                               Listed
                             </p>
                             <p className="text-2xl font-black text-amber-600 dark:text-amber-400">
@@ -353,7 +360,7 @@ export default function EventsOverviewClient({
                             </p>
                           </div>
                           <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-3 rounded-xl border border-purple-100 dark:border-purple-800">
-                            <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase">
+                            <p className="text-xs font-bold text-white/70 uppercase">
                               Revenue
                             </p>
                             <p className="text-lg font-black text-purple-600 dark:text-purple-400">
@@ -361,7 +368,7 @@ export default function EventsOverviewClient({
                             </p>
                           </div>
                           <div className="bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-900/20 p-3 rounded-xl border border-rose-100 dark:border-rose-800">
-                            <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase">
+                            <p className="text-xs font-bold text-white/70 uppercase">
                               Profit
                             </p>
                             <p className={`text-lg font-black ${event.totalProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
@@ -373,9 +380,9 @@ export default function EventsOverviewClient({
 
                       <button className="ml-4 p-2 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg transition-colors">
                         {isExpanded ? (
-                          <ChevronUp className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                          <ChevronUp className="h-6 w-6 text-white/70" />
                         ) : (
-                          <ChevronDown className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                          <ChevronDown className="h-6 w-6 text-white/70" />
                         )}
                       </button>
                     </div>
@@ -383,8 +390,8 @@ export default function EventsOverviewClient({
 
                   {/* Expanded Ticket Details */}
                   {isExpanded && (
-                    <div className="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-6">
-                      <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center space-x-2">
+                    <div className="border-t border-white/10 bg-slate-50 dark:bg-slate-900/50 p-6">
+                      <h4 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
                         <Ticket className="h-5 w-5" />
                         <span>Ticket Details</span>
                       </h4>
@@ -392,14 +399,14 @@ export default function EventsOverviewClient({
                         {event.tickets.map((ticket) => (
                           <div
                             key={ticket.id}
-                            className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow"
+                            className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-white/10 hover:shadow-md transition-shadow"
                           >
                             <div className="grid grid-cols-1 md:grid-cols-7 gap-4 text-sm">
                               <div>
                                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
                                   Section
                                 </p>
-                                <p className="font-bold text-slate-900 dark:text-white">
+                                <p className="font-bold text-white">
                                   {ticket.section || "N/A"}
                                 </p>
                               </div>
@@ -407,7 +414,7 @@ export default function EventsOverviewClient({
                                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
                                   Row
                                 </p>
-                                <p className="font-bold text-slate-900 dark:text-white">
+                                <p className="font-bold text-white">
                                   {ticket.row || "N/A"}
                                 </p>
                               </div>
@@ -415,7 +422,7 @@ export default function EventsOverviewClient({
                                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
                                   Seat
                                 </p>
-                                <p className="font-bold text-slate-900 dark:text-white">
+                                <p className="font-bold text-white">
                                   {ticket.seat || "N/A"}
                                 </p>
                               </div>
@@ -447,7 +454,7 @@ export default function EventsOverviewClient({
                                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1">
                                   Buy Price
                                 </p>
-                                <p className="font-bold text-slate-900 dark:text-white">
+                                <p className="font-bold text-white">
                                   {ticket.buyInPrice && ticket.buyCurrency
                                     ? formatCurrency(
                                         convertCurrencySync(
