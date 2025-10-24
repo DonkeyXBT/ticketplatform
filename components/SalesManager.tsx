@@ -516,22 +516,39 @@ export default function SalesManager({ ticket, onClose }: SalesManagerProps) {
                           <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg font-bold text-sm">
                             {sale.quantitySold} ticket{sale.quantitySold > 1 ? "s" : ""}
                           </span>
-                          <span className="text-lg font-black text-slate-900 dark:text-white">
-                            {CURRENCIES.find((c) => c.code === sale.sellCurrency)?.symbol}
-                            {sale.salePrice?.toFixed(2)}
-                          </span>
-                          {sale.profit !== null && (
-                            <span
-                              className={`text-sm font-bold ${
-                                sale.profit >= 0
-                                  ? "text-green-600 dark:text-green-400"
-                                  : "text-rose-600 dark:text-rose-400"
-                              }`}
-                            >
-                              {sale.profit >= 0 ? "+" : ""}
-                              {CURRENCIES.find((c) => c.code === sale.profitCurrency)?.symbol}
-                              {sale.profit.toFixed(2)}
+                          <div className="flex flex-col">
+                            <span className="text-lg font-black text-slate-900 dark:text-white">
+                              {CURRENCIES.find((c) => c.code === sale.sellCurrency)?.symbol}
+                              {sale.salePrice?.toFixed(2)}
                             </span>
+                            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                              {CURRENCIES.find((c) => c.code === sale.sellCurrency)?.symbol}
+                              {sale.salePrice ? (sale.salePrice / sale.quantitySold).toFixed(2) : '0.00'} per ticket
+                            </span>
+                          </div>
+                          {sale.profit !== null && (
+                            <div className="flex flex-col">
+                              <span
+                                className={`text-sm font-bold ${
+                                  sale.profit >= 0
+                                    ? "text-green-600 dark:text-green-400"
+                                    : "text-rose-600 dark:text-rose-400"
+                                }`}
+                              >
+                                {sale.profit >= 0 ? "+" : ""}
+                                {CURRENCIES.find((c) => c.code === sale.profitCurrency)?.symbol}
+                                {sale.profit.toFixed(2)} profit
+                              </span>
+                              <span className={`text-xs font-bold ${
+                                  sale.profit >= 0
+                                    ? "text-green-500 dark:text-green-500"
+                                    : "text-rose-500 dark:text-rose-500"
+                                }`}>
+                                {sale.profit >= 0 ? "+" : ""}
+                                {CURRENCIES.find((c) => c.code === sale.profitCurrency)?.symbol}
+                                {(sale.profit / sale.quantitySold).toFixed(2)} per ticket
+                              </span>
+                            </div>
                           )}
                           <span
                             className={`px-3 py-1 rounded-lg font-bold text-sm flex items-center gap-1.5 ${
