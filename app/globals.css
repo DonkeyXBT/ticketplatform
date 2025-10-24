@@ -122,3 +122,57 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(248, 250, 252, 0.3);
 }
+
+/* Page Transitions */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.page-transition {
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.page-transition-enter {
+  animation-name: fadeInUp;
+}
+
+.page-transition-exit {
+  animation-name: fadeOutDown;
+}
+
+/* Navigation Progress Bar */
+@keyframes progress-bar {
+  0% {
+    transform: scaleX(0);
+  }
+  50% {
+    transform: scaleX(0.5);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.animate-progress-bar {
+  animation: progress-bar 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+}

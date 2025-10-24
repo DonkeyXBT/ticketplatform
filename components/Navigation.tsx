@@ -60,10 +60,10 @@ export default function Navigation({
             <nav className="hidden md:flex items-center space-x-2">
               <Link
                 href="/dashboard"
-                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
+                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 active:scale-95 ${
                   pathname === "/dashboard"
-                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
-                    : "text-white/90 hover:bg-white/10"
+                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/50"
+                    : "text-white/90 hover:bg-white/10 hover:shadow-md"
                 }`}
               >
                 <LayoutGrid className="h-4 w-4" />
@@ -71,10 +71,10 @@ export default function Navigation({
               </Link>
               <Link
                 href="/events"
-                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
+                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 active:scale-95 ${
                   pathname === "/events"
-                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
-                    : "text-white/90 hover:bg-white/10"
+                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/50"
+                    : "text-white/90 hover:bg-white/10 hover:shadow-md"
                 }`}
               >
                 <Calendar className="h-4 w-4" />
@@ -82,10 +82,10 @@ export default function Navigation({
               </Link>
               <Link
                 href="/accounts"
-                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 ${
+                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 active:scale-95 ${
                   pathname === "/accounts"
-                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md"
-                    : "text-white/90 hover:bg-white/10"
+                    ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/50"
+                    : "text-white/90 hover:bg-white/10 hover:shadow-md"
                 }`}
               >
                 <Shield className="h-4 w-4" />
