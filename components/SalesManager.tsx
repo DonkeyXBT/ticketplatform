@@ -546,7 +546,7 @@ export default function SalesManager({ ticket, onClose }: SalesManagerProps) {
                                 }`}>
                                 {sale.profit >= 0 ? "+" : ""}
                                 {CURRENCIES.find((c) => c.code === sale.profitCurrency)?.symbol}
-                                {(sale.profit / sale.quantitySold).toFixed(2)} per ticket
+                                {((Number(sale.profit) || 0) / (Number(sale.quantitySold) || 1)).toFixed(2)} per ticket
                               </span>
                             </div>
                           )}
