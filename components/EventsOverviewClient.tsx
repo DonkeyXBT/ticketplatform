@@ -19,6 +19,15 @@ import {
   formatCurrency,
 } from "@/lib/currency"
 
+interface Sale {
+  id: string
+  quantitySold: number
+  salePrice: number | null
+  sellCurrency: string | null
+  profit: number | null
+  profitCurrency: string | null
+}
+
 interface Ticket {
   id: string
   purchaseDate: Date | null
@@ -43,6 +52,7 @@ interface Ticket {
   siteSold: string | null
   deliveryEmail: string | null
   deliveryName: string | null
+  sales?: Sale[]
 }
 
 interface User {
@@ -118,14 +128,19 @@ export default function EventsOverviewClient({
       group.tickets.push(ticket)
       group.totalTickets += quantity
 
-      if (ticket.status === "Sold") {
+      // Calculate sold tickets from sales records
+      const ticketSales = ticket.sales || []
+      const soldFromSales = ticketSales.reduce((sum, sale) => sum + (Number(sale.quantitySold) || 0), 0)
+
+      if (soldFromSales > 0) {
+        group.soldTickets += soldFromSales
+      } else if (ticket.status === "Sold") {
         group.soldTickets += quantity
       } else if (ticket.status === "Listed") {
         group.listedTickets += quantity
       }
 
       // Calculate financials
-      // Note: buyInPrice, salePrice, and profit are already totals (price per ticket × quantity)
       if (ticket.buyInPrice && ticket.buyCurrency) {
         group.totalInvestment += convertCurrencySync(
           ticket.buyInPrice,
@@ -134,20 +149,41 @@ export default function EventsOverviewClient({
         )
       }
 
-      if (ticket.salePrice && ticket.sellCurrency && ticket.status === "Sold") {
-        group.totalRevenue += convertCurrencySync(
-          ticket.salePrice,
-          ticket.sellCurrency,
-          displayCurrency
-        )
-      }
+      // Calculate revenue from sales records
+      ticketSales.forEach(sale => {
+        if (sale.salePrice && sale.sellCurrency) {
+          group.totalRevenue += convertCurrencySync(
+            sale.salePrice,
+            sale.sellCurrency,
+            displayCurrency
+          )
+        }
+        if (sale.profit && sale.profitCurrency) {
+          group.totalProfit += convertCurrencySync(
+            sale.profit,
+            sale.profitCurrency,
+            displayCurrency
+          )
+        }
+      })
 
-      if (ticket.profit && ticket.profitCurrency && ticket.status === "Sold") {
-        group.totalProfit += convertCurrencySync(
-          ticket.profit,
-          ticket.profitCurrency,
-          displayCurrency
-        )
+      // Fallback to old method if no sales records
+      if (ticketSales.length === 0) {
+        if (ticket.salePrice && ticket.sellCurrency && ticket.status === "Sold") {
+          group.totalRevenue += convertCurrencySync(
+            ticket.salePrice,
+            ticket.sellCurrency,
+            displayCurrency
+          )
+        }
+
+        if (ticket.profit && ticket.profitCurrency && ticket.status === "Sold") {
+          group.totalProfit += convertCurrencySync(
+            ticket.profit,
+            ticket.profitCurrency,
+            displayCurrency
+          )
+        }
       }
     })
 

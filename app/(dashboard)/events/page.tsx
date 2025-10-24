@@ -14,6 +14,9 @@ export default async function EventsPage() {
     where: {
       userId: session.user.id,
     },
+    include: {
+      sales: true,
+    },
     orderBy: {
       eventDate: "asc",
     },
